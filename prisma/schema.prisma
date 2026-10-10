@@ -1,0 +1,13 @@
+// Schema do Pelagem Studio. Os models são definidos na Etapa 1.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Neon: URL com pooling (pgbouncer) para a aplicação
+  url       = env("DATABASE_URL")
+  // Neon: conexão direta, usada pelo prisma migrate
+  directUrl = env("DIRECT_URL")
+}
