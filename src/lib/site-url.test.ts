@@ -34,7 +34,7 @@ describe("robots e sitemap", () => {
     env({ VERCEL_ENV: "production", VERCEL_PROJECT_PRODUCTION_URL: "pelagem-studio.vercel.app" });
     expect(isIndexable()).toBe(true);
     expect(robots()).toEqual({
-      rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/minha-conta", "/agendar", "/entrar"] },
+      rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/minha-conta", "/agendar", "/entrar", "/equipe"] },
       sitemap: "https://pelagem-studio.vercel.app/sitemap.xml",
     });
   });

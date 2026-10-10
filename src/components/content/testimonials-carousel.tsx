@@ -49,12 +49,13 @@ export function TestimonialsCarousel({ items }: { items: readonly Testimonial[] 
         {items.map((item, index) => (
           <li
             key={item.tutor}
-            role="group"
-            aria-roledescription="depoimento"
-            aria-label={`${index + 1} de ${items.length}`}
             className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
           >
-            <figure className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1">
+            <figure
+              aria-roledescription="depoimento"
+              aria-label={`${index + 1} de ${items.length}: ${item.tutor}`}
+              className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
+            >
               <div className="flex items-center justify-between">
                 <p className="flex gap-0.5" role="img" aria-label={`Avaliação: ${item.rating} de 5 estrelas`}>
                   {Array.from({ length: 5 }, (_, i) => (

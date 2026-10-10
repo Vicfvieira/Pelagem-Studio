@@ -23,6 +23,7 @@ import {
   saoPauloDateTime,
   sizeFromWeight,
   toSaoPauloDate,
+  toSaoPauloTime,
   weekdayOf,
   type PetSizeCode,
 } from "../src/lib/business-rules";
@@ -340,6 +341,53 @@ function placeAppointment(
   throw new Error("Não foi possível encaixar um agendamento: agenda lotada no período.");
 }
 
+/**
+ * Conta demo: um banho de HOJE já em andamento, para o "Acompanhe o banho" ter o que mostrar.
+ * Começa no slot anterior ao horário atual (dentro do expediente) e respeita a capacidade.
+ * Em dia fechado (domingo/segunda) não há atendimento ao vivo.
+ */
+function placeLiveAppointment(
+  agenda: Agenda,
+  now: Date,
+  today: string,
+  pets: SeedPet[],
+  services: CatalogService[],
+): Prisma.AppointmentCreateManyInput | null {
+  const bath = services.find((s) => s.slug === "banho");
+  if (!bath || !OPEN_WEEKDAYS.includes(weekdayOf(today))) return null;
+
+  const [hours, minutes] = toSaoPauloTime(now).split(":").map(Number);
+  const nowSlot = Math.floor((hours * 60 + minutes) / SLOT_MINUTES) * SLOT_MINUTES;
+  for (const pet of pets) {
+    const { priceCents, durationMinutes } = bath.prices[pet.size];
+    const latest = CLOSE_MINUTE - durationMinutes;
+    const desired = Math.min(Math.max(nowSlot - SLOT_MINUTES, OPEN_MINUTE), latest);
+    // Tenta o horário desejado e, se lotado, os anteriores.
+    for (let start = desired; start >= OPEN_MINUTE; start -= SLOT_MINUTES) {
+      const startAt = saoPauloDateTime(today, start);
+      if (!agenda.fits(pet.id, startAt, durationMinutes)) continue;
+      agenda.occupy(pet.id, startAt, durationMinutes);
+      return {
+        userId: pet.ownerId,
+        petId: pet.id,
+        serviceId: bath.id,
+        size: pet.size,
+        priceCents,
+        durationMinutes,
+        startAt,
+        endAt: new Date(startAt.getTime() + durationMinutes * 60_000),
+        status: "AGENDADO",
+        groomingStage: "SECAGEM",
+        stageUpdatedAt: new Date(now.getTime() - 6 * 60_000),
+        taxiFeeCents: 0,
+        totalCents: priceCents,
+        createdAt: new Date(startAt.getTime() - 3 * DAY_MS),
+      };
+    }
+  }
+  return null;
+}
+
 async function main(): Promise<void> {
   faker.seed(FAKER_SEED);
   const now = new Date();
@@ -397,6 +445,10 @@ async function main(): Promise<void> {
           forceStatus: "AGENDADO",
         }),
       );
+
+      const live = placeLiveAppointment(agenda, now, today, [...demoPets].reverse(), services);
+      if (live) appointments.push(live);
+      else console.log("ℹ️  Estúdio fechado hoje: a conta demo fica sem atendimento ao vivo.");
 
       for (let i = appointments.length; i < PAST_APPOINTMENTS + FUTURE_APPOINTMENTS; i++) {
         const isPast = i < PAST_APPOINTMENTS;

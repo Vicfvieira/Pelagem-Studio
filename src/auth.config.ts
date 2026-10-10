@@ -3,7 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 import { safeCallbackUrl } from "@/lib/auth/redirect";
 
 /** Rotas que exigem login. O proxy redireciona; as páginas checam de novo (defesa em profundidade). */
-export const PROTECTED_PREFIXES = ["/minha-conta", "/agendar"];
+export const PROTECTED_PREFIXES = ["/minha-conta", "/agendar", "/equipe"];
 const AUTH_PAGES = ["/entrar", "/cadastro"];
 
 function matches(pathname: string, prefixes: string[]): boolean {

@@ -3,7 +3,8 @@ import Link from "next/link";
 import { BadgePercent, Check, Sparkles } from "lucide-react";
 
 import { PageHeader } from "@/components/content/page-header";
-import { Reveal } from "@/components/motion";
+import { Reveal, TiltCard } from "@/components/motion";
+import { QuoteSimulator } from "@/components/quote/quote-simulator";
 import { Button } from "@/components/ui/button";
 import { PET_SIZE_LABELS, PET_SIZES } from "@/lib/business-rules";
 import { getServicesCatalog } from "@/lib/data/services";
@@ -41,11 +42,30 @@ export default async function PricesPage() {
       </PageHeader>
 
       {services.length > 0 && (
+        <section id="simulador" aria-labelledby="simulador-titulo" className="flex scroll-mt-24 flex-col gap-6">
+          <div className="flex max-w-2xl flex-col gap-2">
+            <h2 id="simulador-titulo" className="text-3xl font-black tracking-tight">
+              Simule seu orçamento
+            </h2>
+            <p className="text-muted-foreground">
+              Ajuste o peso, a pelagem e os adicionais: o valor muda na hora. Depois é só agendar.
+            </p>
+          </div>
+          <QuoteSimulator services={services} />
+        </section>
+      )}
+
+      {services.length > 0 && (
         <section aria-labelledby="tabela-precos-titulo" className="flex flex-col gap-4">
           <h2 id="tabela-precos-titulo" className="text-3xl font-black tracking-tight">
             Serviços
           </h2>
-          <div className="overflow-x-auto rounded-2xl border bg-card" tabIndex={0} role="region" aria-labelledby="tabela-precos-titulo">
+          <div
+            className="overflow-x-auto rounded-2xl border bg-card"
+            tabIndex={0}
+            role="region"
+            aria-labelledby="tabela-precos-titulo"
+          >
             <table className="w-full min-w-[36rem] text-left text-sm">
               <caption className="sr-only">Preço e duração de cada serviço por porte</caption>
               <thead className="bg-muted">
@@ -70,7 +90,10 @@ export default async function PricesPage() {
                     {PET_SIZES.map((size) => (
                       <td key={size} className="px-4 py-3">
                         <span className="font-bold">{formatCents(service.prices[size].priceCents)}</span>
-                        <span className="text-muted-foreground"> · {formatDuration(service.prices[size].durationMinutes)}</span>
+                        <span className="text-muted-foreground">
+                          {" "}
+                          · {formatDuration(service.prices[size].durationMinutes)}
+                        </span>
                       </td>
                     ))}
                   </tr>
@@ -81,27 +104,36 @@ export default async function PricesPage() {
         </section>
       )}
 
-      <section aria-labelledby="pelagem-titulo" className="grid gap-8 rounded-2xl bg-accent p-6 md:grid-cols-[1fr_1.4fr] md:p-10">
+      <section
+        aria-labelledby="pelagem-titulo"
+        className="grid gap-8 rounded-2xl bg-accent p-6 md:grid-cols-[1fr_1.4fr] md:p-10"
+      >
         <div className="flex flex-col gap-3">
           <h2 id="pelagem-titulo" className="text-3xl font-black tracking-tight">
             Raças de pelagem longa
           </h2>
           <p className="text-muted-foreground">
             Pelo longo leva mais tempo para lavar, desembaraçar e secar. O acréscimo vale para{" "}
-            {longCoatServices.join(", ").replace(/, ([^,]*)$/, " e $1")} e é confirmado na avaliação de chegada,
-            sempre com aviso antes de começarmos.
+            {longCoatServices.join(", ").replace(/, ([^,]*)$/, " e $1")} e é confirmado na avaliação de chegada, sempre
+            com aviso antes de começarmos.
           </p>
         </div>
         <ul className="grid gap-3">
           {PET_SIZES.map((size) => (
-            <li key={size} className="flex flex-col gap-1 rounded-2xl bg-card p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+            <li
+              key={size}
+              className="flex flex-col gap-1 rounded-2xl bg-card p-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
+            >
               <div>
                 <p className="font-extrabold">
-                  Porte {size} <span className="font-semibold text-muted-foreground">({PET_SIZE_LABELS[size].range})</span>
+                  Porte {size}{" "}
+                  <span className="font-semibold text-muted-foreground">({PET_SIZE_LABELS[size].range})</span>
                 </p>
                 <p className="text-sm text-muted-foreground">Ex.: {LONG_COAT_BREEDS[size].join(", ")}</p>
               </div>
-              <p className="shrink-0 text-lg font-black text-primary-strong">+ {formatCents(LONG_COAT_SURCHARGE_CENTS[size])}</p>
+              <p className="shrink-0 text-lg font-black text-primary-strong">
+                + {formatCents(LONG_COAT_SURCHARGE_CENTS[size])}
+              </p>
             </li>
           ))}
         </ul>
@@ -141,82 +173,91 @@ export default async function PricesPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             {PLANS.map((plan, index) => (
               <Reveal key={plan.id} delay={index * 0.08}>
-                <article
-                  className={
-                    index === PLANS.length - 1
-                      ? "flex h-full flex-col gap-5 rounded-2xl border-2 border-primary bg-card p-6 shadow-lg md:p-8"
-                      : "flex h-full flex-col gap-5 rounded-2xl border bg-card p-6 shadow-sm md:p-8"
-                  }
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-2xl font-black">{plan.name}</h3>
-                      <p className="text-sm text-muted-foreground">{plan.description}</p>
+                <TiltCard max={3}>
+                  <article
+                    className={
+                      index === PLANS.length - 1
+                        ? "flex h-full flex-col gap-5 rounded-2xl border-2 border-primary bg-card p-6 shadow-lg md:p-8"
+                        : "flex h-full flex-col gap-5 rounded-2xl border bg-card p-6 shadow-sm md:p-8"
+                    }
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-2xl font-black">{plan.name}</h3>
+                        <p className="text-sm text-muted-foreground">{plan.description}</p>
+                      </div>
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-extrabold">
+                        <BadgePercent className="size-4" aria-hidden="true" />
+                        {plan.discountPercent}% off
+                      </span>
                     </div>
-                    <span className="flex shrink-0 items-center gap-1 rounded-full bg-secondary px-3 py-1 text-sm font-extrabold">
-                      <BadgePercent className="size-4" aria-hidden="true" />
-                      {plan.discountPercent}% off
-                    </span>
-                  </div>
-                  <table className="w-full text-left text-sm">
-                    <caption className="sr-only">Valor mensal do {plan.name} por porte</caption>
-                    <thead>
-                      <tr className="text-muted-foreground">
-                        <th scope="col" className="py-2 font-bold">
-                          Porte
-                        </th>
-                        <th scope="col" className="py-2 font-bold">
-                          Avulso
-                        </th>
-                        <th scope="col" className="py-2 font-bold">
-                          No plano
-                        </th>
-                        <th scope="col" className="py-2 font-bold">
-                          Economia
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {PET_SIZES.map((size) => {
-                        const quote = quotePlan(plan, bath.prices[size].priceCents);
-                        return (
-                          <tr key={size} className="border-t">
-                            <th scope="row" className="py-2 font-extrabold">
-                              {size}
-                            </th>
-                            <td className="py-2 text-muted-foreground line-through">{formatCents(quote.fullPriceCents)}</td>
-                            <td className="py-2 font-black">{formatCents(quote.planPriceCents)}/mês</td>
-                            <td className="py-2 font-bold text-secondary-strong">{formatCents(quote.savingsCents)}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <ul className="flex flex-col gap-2 text-sm">
-                    <li className="flex gap-2">
-                      <Check className="size-4 shrink-0 text-secondary-strong" aria-hidden="true" />
-                      {plan.bathsPerMonth} banhos por mês
-                    </li>
-                    {plan.perks.map((perk) => (
-                      <li key={perk} className="flex gap-2">
+                    <table className="w-full text-left text-sm">
+                      <caption className="sr-only">Valor mensal do {plan.name} por porte</caption>
+                      <thead>
+                        <tr className="text-muted-foreground">
+                          <th scope="col" className="py-2 font-bold">
+                            Porte
+                          </th>
+                          <th scope="col" className="py-2 font-bold">
+                            Avulso
+                          </th>
+                          <th scope="col" className="py-2 font-bold">
+                            No plano
+                          </th>
+                          <th scope="col" className="py-2 font-bold">
+                            Economia
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {PET_SIZES.map((size) => {
+                          const quote = quotePlan(plan, bath.prices[size].priceCents);
+                          return (
+                            <tr key={size} className="border-t">
+                              <th scope="row" className="py-2 font-extrabold">
+                                {size}
+                              </th>
+                              <td className="py-2 text-muted-foreground line-through">
+                                {formatCents(quote.fullPriceCents)}
+                              </td>
+                              <td className="py-2 font-black">{formatCents(quote.planPriceCents)}/mês</td>
+                              <td className="py-2 font-bold text-secondary-strong">
+                                {formatCents(quote.savingsCents)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <ul className="flex flex-col gap-2 text-sm">
+                      <li className="flex gap-2">
                         <Check className="size-4 shrink-0 text-secondary-strong" aria-hidden="true" />
-                        {perk}
+                        {plan.bathsPerMonth} banhos por mês
                       </li>
-                    ))}
-                  </ul>
-                </article>
+                      {plan.perks.map((perk) => (
+                        <li key={perk} className="flex gap-2">
+                          <Check className="size-4 shrink-0 text-secondary-strong" aria-hidden="true" />
+                          {perk}
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </TiltCard>
               </Reveal>
             ))}
           </div>
           <p className="text-sm text-muted-foreground">
-            Planos são contratados na recepção ou pelo WhatsApp, sem fidelidade: dá para cancelar no fim de qualquer mês.
+            Planos são contratados na recepção ou pelo WhatsApp, sem fidelidade: dá para cancelar no fim de qualquer
+            mês.
           </p>
         </section>
       )}
 
       <section className="flex flex-col items-center gap-4 rounded-2xl bg-foreground p-8 text-center text-background md:p-12">
         <h2 className="text-3xl font-black tracking-tight">Pronto para o próximo banho?</h2>
-        <p className="max-w-xl text-background/80">Escolha o serviço, veja o horário livre e confirme em poucos minutos.</p>
+        <p className="max-w-xl text-background/80">
+          Escolha o serviço, veja o horário livre e confirme em poucos minutos.
+        </p>
         <Button asChild size="lg">
           <Link href="/agendar">Agendar agora</Link>
         </Button>

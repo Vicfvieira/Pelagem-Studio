@@ -7,6 +7,7 @@ import { HowItWorks } from "@/components/home/how-it-works";
 import { Location } from "@/components/home/location";
 import { ServiceMarquee } from "@/components/home/service-marquee";
 import { Testimonials } from "@/components/home/testimonials";
+import { Transformations } from "@/components/home/transformations";
 import { PetStoreJsonLd } from "@/components/seo/pet-store-json-ld";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -19,6 +20,7 @@ export default function HomePage() {
       <ServiceMarquee />
       <FeaturedServices />
       <HowItWorks />
+      <Transformations />
       <StatsBand />
       <Testimonials />
       <Location />

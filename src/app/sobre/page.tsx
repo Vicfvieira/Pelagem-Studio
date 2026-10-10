@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/content/page-header";
 import { StatsBand } from "@/components/content/stats-band";
 import { TeamAvatar } from "@/components/content/team-avatar";
 import { Timeline } from "@/components/content/timeline";
-import { Reveal } from "@/components/motion";
+import { Reveal, TiltCard } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { MISSION, TEAM, TIMELINE, VALUES } from "@/content/company";
 import { SITE } from "@/lib/site";
@@ -24,25 +24,39 @@ export default function AboutPage() {
   return (
     <>
       <section aria-labelledby="sobre-titulo" className="mx-auto flex max-w-6xl flex-col gap-12 px-4 py-12 md:py-16">
-        <PageHeader id="sobre-titulo" eyebrow={`Desde ${SITE.foundedYear} em São Paulo`} title="Um estúdio pequeno de propósito">
+        <PageHeader
+          id="sobre-titulo"
+          eyebrow={`Desde ${SITE.foundedYear} em São Paulo`}
+          title="Um estúdio pequeno de propósito"
+        >
           <p>
-            O Pelagem Studio nasceu em março de {SITE.foundedYear}, numa sala de 40 m² na Vila Mariana, com uma
-            banheira e uma regra: um pet de cada vez, sem pressa. Hoje estamos na {SITE.address.neighborhood}, com
-            dois boxes de banho, e a regra continua quase a mesma: no máximo dois.
+            O Pelagem Studio nasceu em março de {SITE.foundedYear}, numa sala de 40 m² na Vila Mariana, com uma banheira
+            e uma regra: um pet de cada vez, sem pressa. Hoje estamos na {SITE.address.neighborhood}, com dois boxes de
+            banho, e a regra continua quase a mesma: no máximo dois.
           </p>
         </PageHeader>
 
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
           <Reveal className="flex flex-col justify-center gap-4 rounded-2xl bg-primary p-8 md:p-10">
             <h2 className="text-sm font-extrabold tracking-wide uppercase">Nossa missão</h2>
-            <p className="font-[family-name:var(--font-fraunces)] text-2xl leading-snug font-bold sm:text-3xl">{MISSION}</p>
+            <p className="font-[family-name:var(--font-fraunces)] text-2xl leading-snug font-bold sm:text-3xl">
+              {MISSION}
+            </p>
           </Reveal>
           <ul className="flex flex-col gap-4">
             {VALUES.map((value, index) => {
               const Icon = VALUE_ICONS[index];
               return (
-                <Reveal as="li" key={value.title} delay={index * 0.08} className="flex gap-4 rounded-2xl border bg-card p-5">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-secondary/25" aria-hidden="true">
+                <Reveal
+                  as="li"
+                  key={value.title}
+                  delay={index * 0.08}
+                  className="flex gap-4 rounded-2xl border bg-card p-5"
+                >
+                  <span
+                    className="grid size-11 shrink-0 place-items-center rounded-2xl bg-secondary/25"
+                    aria-hidden="true"
+                  >
                     <Icon className="size-5 text-secondary-strong" />
                   </span>
                   <div>
@@ -81,24 +95,26 @@ export default function AboutPage() {
           <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {TEAM.map((member, index) => (
               <Reveal as="li" key={member.name} delay={(index % 3) * 0.08}>
-                <article className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1">
-                  <div className="flex items-center gap-4">
-                    <div className="size-20 shrink-0">
-                      <TeamAvatar name={member.name} tone={member.tone} />
+                <TiltCard>
+                  <article className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg">
+                    <div className="flex items-center gap-4">
+                      <div className="size-20 shrink-0">
+                        <TeamAvatar name={member.name} tone={member.tone} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black">{member.name}</h3>
+                        <p className="text-sm font-bold text-primary-strong">{member.role}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-black">{member.name}</h3>
-                      <p className="text-sm font-bold text-primary-strong">{member.role}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm">
-                    <span className="font-bold">Especialidade:</span> {member.specialty}
-                  </p>
-                  <blockquote className="flex-1 border-l-4 border-secondary pl-4 text-muted-foreground italic">
-                    “{member.quote}”
-                  </blockquote>
-                  <p className="text-xs font-semibold text-muted-foreground">No Pelagem desde {member.since}</p>
-                </article>
+                    <p className="text-sm">
+                      <span className="font-bold">Especialidade:</span> {member.specialty}
+                    </p>
+                    <blockquote className="flex-1 border-l-4 border-secondary pl-4 text-muted-foreground italic">
+                      “{member.quote}”
+                    </blockquote>
+                    <p className="text-xs font-semibold text-muted-foreground">No Pelagem desde {member.since}</p>
+                  </article>
+                </TiltCard>
               </Reveal>
             ))}
             <li className="flex flex-col justify-center gap-4 rounded-2xl border-2 border-dashed border-primary/50 p-6">

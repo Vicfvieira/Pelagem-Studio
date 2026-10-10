@@ -1,4 +1,4 @@
-import type { AppointmentStatus, PetSize, Species } from "@prisma/client";
+import type { AppointmentStatus, GroomingStage, PetSize, Species } from "@prisma/client";
 
 import {
   BATH_SERVICE_SLUGS,
@@ -10,6 +10,7 @@ import {
 } from "@/lib/account/rules";
 import { toSaoPauloDate } from "@/lib/business-rules";
 import { prisma } from "@/lib/prisma";
+import { todayRange } from "@/lib/tracking/stages";
 
 const HISTORY_LIMIT = 12;
 
@@ -36,8 +37,21 @@ export type AccountAppointment = {
   cancellable: boolean;
 };
 
+/** Atendimento de hoje, acompanhado ao vivo. */
+export type TodayAppointment = {
+  id: string;
+  petName: string;
+  petBreed: string;
+  serviceSlug: string;
+  serviceName: string;
+  startAt: string;
+  stage: GroomingStage | null;
+  stageUpdatedAt: string | null;
+};
+
 export type AccountOverview = {
   pets: AccountPet[];
+  today: TodayAppointment[];
   upcoming: AccountAppointment[];
   history: AccountAppointment[];
   historyTotal: number;
@@ -49,6 +63,7 @@ const dateOnly = (value: Date) => value.toISOString().slice(0, 10);
 /** Tudo o que /minha-conta mostra, SEMPRE filtrado pelo dono (userId da sessão). */
 export async function getAccountOverview(userId: string, now = new Date()): Promise<AccountOverview> {
   const today = toSaoPauloDate(now);
+  const day = todayRange(now);
   const appointmentSelect = {
     id: true,
     startAt: true,
@@ -60,7 +75,11 @@ export async function getAccountOverview(userId: string, now = new Date()): Prom
   } as const;
   const bathFilter = { service: { slug: { in: [...BATH_SERVICE_SLUGS] } } };
 
-  const [pets, upcoming, history, historyTotal, lastBaths, nextBaths] = await Promise.all([
+  // Hoje: atendimentos ativos do dia (acompanhamento ao vivo). Próximos: a partir de amanhã.
+  // Histórico: dias anteriores ou já concluídos/cancelados. Os três grupos não se repetem.
+  const historyWhere = { userId, OR: [{ startAt: { lt: day.start } }, { status: { not: "AGENDADO" as const } }] };
+
+  const [pets, todayAppointments, upcoming, history, historyTotal, lastBaths, nextBaths] = await Promise.all([
     prisma.pet.findMany({
       where: { ownerId: userId },
       orderBy: { name: "asc" },
@@ -75,19 +94,29 @@ export async function getAccountOverview(userId: string, now = new Date()): Prom
       },
     }),
     prisma.appointment.findMany({
-      where: { userId, status: "AGENDADO", startAt: { gte: now } },
+      where: { userId, status: "AGENDADO", startAt: { gte: day.start, lt: day.end } },
+      orderBy: { startAt: "asc" },
+      select: {
+        id: true,
+        startAt: true,
+        groomingStage: true,
+        stageUpdatedAt: true,
+        pet: { select: { name: true, breed: true } },
+        service: { select: { slug: true, name: true } },
+      },
+    }),
+    prisma.appointment.findMany({
+      where: { userId, status: "AGENDADO", startAt: { gte: day.end } },
       orderBy: { startAt: "asc" },
       select: appointmentSelect,
     }),
     prisma.appointment.findMany({
-      where: { userId, OR: [{ startAt: { lt: now } }, { status: { not: "AGENDADO" } }] },
+      where: historyWhere,
       orderBy: { startAt: "desc" },
       take: HISTORY_LIMIT,
       select: appointmentSelect,
     }),
-    prisma.appointment.count({
-      where: { userId, OR: [{ startAt: { lt: now } }, { status: { not: "AGENDADO" } }] },
-    }),
+    prisma.appointment.count({ where: historyWhere }),
     // Último banho concluído de cada pet.
     prisma.appointment.findMany({
       where: { userId, status: "CONCLUIDO", ...bathFilter },
@@ -147,6 +176,16 @@ export async function getAccountOverview(userId: string, now = new Date()): Prom
 
   return {
     pets: accountPets,
+    today: todayAppointments.map((a) => ({
+      id: a.id,
+      petName: a.pet.name,
+      petBreed: a.pet.breed,
+      serviceSlug: a.service.slug,
+      serviceName: a.service.name,
+      startAt: a.startAt.toISOString(),
+      stage: a.groomingStage,
+      stageUpdatedAt: a.stageUpdatedAt?.toISOString() ?? null,
+    })),
     upcoming: upcoming.map(toView),
     history: history.map(toView),
     historyTotal,

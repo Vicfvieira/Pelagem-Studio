@@ -142,5 +142,19 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   desconhecido chama `notFound()`. Por causa do streaming, a 1ª resposta pode sair com status 200, mas com a página 404 e
   `noindex` (`ensureStatic="navigation"` resolveria, mas o header lê a sessão e quebra o build).
 - **Menu**: 5 links no header a partir de `lg`; o resto está no mapa do site do rodapé (`SITEMAP_GROUPS`).
+- **Simulador (A4)**: `estimateQuote` (puro, testado) com preços do banco + `pricing-extras`. O link para /agendar leva
+  `servico`, `porte`, `pelo` e `adicionais`; o servidor transforma só valores de uma lista fechada em observações
+  (`quoteNotes`), então um link de terceiros não injeta texto. Preço ao vivo com `AnimatedNumber` (rAF, sem lib extra).
+- **Acompanhe o banho**: etapa em `Appointment.groomingStage` + `stageUpdatedAt` (migração `grooming_stage`). Etapas por
+  serviço em `src/lib/tracking/stages.ts` (sem tosa no banho simples; corte de unhas só Recebido → Pronto). A tela do
+  tutor consulta `GET /api/acompanhamento/[id]` a cada 30 s (pausa com a aba oculta), só o dono recebe 200 (outros: 404).
+  A equipe avança em `/equipe` (ADMIN conferido no banco, não só no token); o UPDATE tem etapa esperada no WHERE, então
+  cliques duplicados não pulam etapas. Depois de "Pronto", o próximo passo marca CONCLUIDO. Minha conta separa
+  hoje / próximos (a partir de amanhã) / histórico. Seed cria um banho de hoje em "Secagem" para a conta demo (em dia
+  aberto). `npm run admin:senha` gera nova senha para admin@example.com.
+- **Antes/depois**: `<input type="range">` transparente sobre a imagem (mouse, toque e teclado nativos); recorte com
+  clip-path e divisória com transform. Ilustrações próprias até as fotos da A5.
+- **Microinterações**: `TiltCard` (motion values, só mouse, máx. 5°) em serviços, planos e equipe; botões afundam 3% ao
+  clicar (desligado com reduced motion).
 
 @AGENTS.md

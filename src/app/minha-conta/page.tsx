@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { CalendarClock, LogOut, PawPrint, Syringe } from "lucide-react";
+import { CalendarClock, LogOut, PawPrint, Radio, Syringe } from "lucide-react";
 
 import { AddPetForm } from "@/components/account/add-pet-form";
 import { AppointmentList } from "@/components/account/appointment-list";
+import { BathTracker } from "@/components/account/bath-tracker";
 import { NextBathCard } from "@/components/account/next-bath-card";
 import { PetCard } from "@/components/account/pet-card";
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,13 @@ function Section({ id, title, children }: { id: string; title: string; children:
 
 async function AccountContent() {
   const user = await requireUser("/minha-conta");
-  const { pets, upcoming, history, historyTotal, vaccineAlerts } = await getAccountOverview(user.id);
+  const { pets, today, upcoming, history, historyTotal, vaccineAlerts } = await getAccountOverview(user.id);
   const firstName = user.name?.split(" ")[0] ?? "tutor(a)";
 
   const summary = [
+    ...(today.length > 0
+      ? [{ href: "#acompanhe", icon: Radio, label: `${today.length} atendimento${today.length === 1 ? "" : "s"} hoje` }]
+      : []),
     { href: "#agendamentos", icon: CalendarClock, label: `${upcoming.length} próximo${upcoming.length === 1 ? "" : "s"}` },
     {
       href: "#pets",
@@ -73,6 +77,18 @@ async function AccountContent() {
         </ul>
       </nav>
 
+      {today.length > 0 && (
+        <Section id="acompanhe" title="Acompanhe o banho">
+          <ul className="grid gap-4 lg:grid-cols-2">
+            {today.map((appointment) => (
+              <li key={appointment.id}>
+                <BathTracker appointment={appointment} />
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
       {pets.length === 0 ? (
         <Section id="pets" title="Comece cadastrando seu pet">
           <p className="text-muted-foreground">Com o pet cadastrado você agenda em poucos cliques e acompanha as vacinas.</p>
@@ -103,7 +119,9 @@ async function AccountContent() {
             )}
           </div>
         )}
-        <p className="text-sm text-muted-foreground">Cancelamentos pelo site até 24h antes do horário.</p>
+        <p className="text-sm text-muted-foreground">
+          Cancelamentos pelo site até 24h antes do horário. Os atendimentos de hoje aparecem em “Acompanhe o banho”.
+        </p>
       </Section>
 
       {pets.length > 0 && (

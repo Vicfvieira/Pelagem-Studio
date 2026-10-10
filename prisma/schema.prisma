@@ -38,6 +38,15 @@ enum AppointmentStatus {
   CANCELADO
 }
 
+/// Etapas do "Acompanhe o banho", na ordem em que acontecem
+enum GroomingStage {
+  RECEBIDO
+  BANHO
+  SECAGEM
+  TOSA
+  PRONTO
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -148,6 +157,9 @@ model Appointment {
   taxiFeeCents    Int               @default(0)
   totalCents      Int
   notes           String?
+  /// Etapa atual no dia do atendimento (null = pet ainda não chegou)
+  groomingStage   GroomingStage?
+  stageUpdatedAt  DateTime?         @db.Timestamptz(3)
   cancelledAt     DateTime?         @db.Timestamptz(3)
   createdAt       DateTime          @default(now()) @db.Timestamptz(3)
   updatedAt       DateTime          @updatedAt @db.Timestamptz(3)

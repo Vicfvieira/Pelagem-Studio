@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calculator } from "lucide-react";
 
+import { TiltCard } from "@/components/motion";
 import { ServiceIcon } from "@/components/services/service-icon";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -29,26 +30,35 @@ export async function FeaturedServices() {
 
             return (
               <li key={service.slug}>
-                <Card className="h-full">
-                  <CardHeader>
-                    <ServiceIcon slug={service.slug} className="mb-2" />
-                    <CardTitle>{service.name}</CardTitle>
-                    <CardDescription>{service.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      a partir de{" "}
-                      <span className="text-2xl font-black text-foreground">{formatCents(service.fromPriceCents)}</span>
-                    </p>
-                    <p className="text-sm text-muted-foreground">Duração: {duration}</p>
-                  </CardContent>
-                </Card>
+                <TiltCard>
+                  <Card className="h-full transition-shadow duration-300 hover:shadow-lg">
+                    <CardHeader>
+                      <ServiceIcon slug={service.slug} className="mb-2" />
+                      <CardTitle>{service.name}</CardTitle>
+                      <CardDescription>{service.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        a partir de{" "}
+                        <span className="text-2xl font-black text-foreground">
+                          {formatCents(service.fromPriceCents)}
+                        </span>
+                      </p>
+                      <p className="text-sm text-muted-foreground">Duração: {duration}</p>
+                    </CardContent>
+                  </Card>
+                </TiltCard>
               </li>
             );
           })}
         </ul>
 
-        <div className="mt-10 flex justify-center">
+        <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
+          <Button asChild size="lg">
+            <Link href="/precos#simulador">
+              <Calculator aria-hidden="true" /> Simular orçamento
+            </Link>
+          </Button>
           <Button asChild variant="outline" size="lg">
             <Link href="/servicos">
               Ver todos os serviços <ArrowRight aria-hidden="true" />

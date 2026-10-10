@@ -11,6 +11,7 @@ import {
   toSaoPauloTime,
 } from "@/lib/business-rules";
 import { getServicesCatalog } from "@/lib/data/services";
+import { quoteNotes } from "@/lib/pricing-extras";
 import { prisma } from "@/lib/prisma";
 import { petSizeSchema, serviceSlugSchema } from "@/lib/validation/availability";
 
@@ -65,6 +66,7 @@ async function BookingContent({ searchParams }: { searchParams: SearchParams }) 
       firstDay={firstDay}
       initialPetId={initialPet?.id}
       initialService={initialService}
+      initialNotes={quoteNotes({ pelo: params.pelo, adicionais: params.adicionais })}
     />
   );
 }

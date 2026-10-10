@@ -96,3 +96,69 @@ export function quotePlan(plan: Pick<Plan, "bathsPerMonth" | "discountPercent">,
   const planPriceCents = Math.floor(discounted / 100) * 100;
   return { fullPriceCents, planPriceCents, savingsCents: fullPriceCents - planPriceCents };
 }
+
+export type QuoteServicePrices = {
+  slug: string;
+  name: string;
+  prices: Record<PetSizeCode, { priceCents: number; durationMinutes: number }>;
+};
+
+export type QuoteInput = {
+  serviceSlug: string;
+  size: PetSizeCode;
+  longCoat: boolean;
+  addonIds: readonly string[];
+};
+
+export type QuoteLine = { label: string; cents: number };
+export type Quote = { lines: QuoteLine[]; totalCents: number; durationMinutes: number };
+
+const longCoatApplies = (slug: string) => (LONG_COAT_SERVICE_SLUGS as readonly string[]).includes(slug);
+
+/**
+ * Estimativa do simulador: serviço pelo porte + pelagem longa (quando se aplica) + adicionais.
+ * Ids desconhecidos são ignorados. É só uma prévia: o preço do serviço é recalculado no servidor
+ * ao agendar, e pelagem longa e adicionais são confirmados na avaliação de chegada.
+ */
+export function estimateQuote(input: QuoteInput, services: readonly QuoteServicePrices[]): Quote | null {
+  const service = services.find((s) => s.slug === input.serviceSlug);
+  if (!service) return null;
+  const base = service.prices[input.size];
+
+  const lines: QuoteLine[] = [{ label: `${service.name} (porte ${input.size})`, cents: base.priceCents }];
+  if (input.longCoat && longCoatApplies(service.slug)) {
+    lines.push({ label: "Pelagem longa", cents: LONG_COAT_SURCHARGE_CENTS[input.size] });
+  }
+  for (const addon of ADDONS) {
+    if (input.addonIds.includes(addon.id)) {
+      lines.push({ label: addon.unit ? `${addon.name} (${addon.unit})` : addon.name, cents: addon.priceCents });
+    }
+  }
+  return {
+    lines,
+    totalCents: lines.reduce((sum, line) => sum + line.cents, 0),
+    durationMinutes: base.durationMinutes,
+  };
+}
+
+/** Parâmetros que o simulador manda para /agendar (o porte e o serviço já existem no agendamento). */
+export function quoteSearchParams(input: QuoteInput): URLSearchParams {
+  const params = new URLSearchParams({ servico: input.serviceSlug, porte: input.size });
+  if (input.longCoat && longCoatApplies(input.serviceSlug)) params.set("pelo", "longo");
+  const addons = ADDONS.filter((addon) => input.addonIds.includes(addon.id)).map((addon) => addon.id);
+  if (addons.length > 0) params.set("adicionais", addons.join(","));
+  return params;
+}
+
+/**
+ * Texto das observações do agendamento a partir dos parâmetros do simulador.
+ * Só aceita valores conhecidos (lista fechada): um link montado por terceiros não injeta texto livre.
+ */
+export function quoteNotes(params: { pelo?: unknown; adicionais?: unknown }): string {
+  const parts: string[] = [];
+  if (params.pelo === "longo") parts.push("pelagem longa");
+  const requested = typeof params.adicionais === "string" ? params.adicionais.split(",") : [];
+  const addons = ADDONS.filter((addon) => requested.includes(addon.id)).map((addon) => addon.name.toLowerCase());
+  if (addons.length > 0) parts.push(`adicionais: ${addons.join(", ")}`);
+  return parts.length > 0 ? `Do simulador de orçamento: ${parts.join("; ")}.` : "";
+}

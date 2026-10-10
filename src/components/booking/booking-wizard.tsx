@@ -45,9 +45,19 @@ type BookingWizardProps = {
   firstDay: string;
   initialPetId?: string;
   initialService?: string;
+  /** Observações vindas do simulador de orçamento (pelagem longa e adicionais). */
+  initialNotes?: string;
 };
 
-export function BookingWizard({ pets, services, today, firstDay, initialPetId, initialService }: BookingWizardProps) {
+export function BookingWizard({
+  pets,
+  services,
+  today,
+  firstDay,
+  initialPetId,
+  initialService,
+  initialNotes,
+}: BookingWizardProps) {
   const [step, setStep] = useState(0);
   const [quote, setQuote] = useState<TaxiQuote | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -65,7 +75,7 @@ export function BookingWizard({ pets, services, today, firstDay, initialPetId, i
     cep: "",
     numero: "",
     complemento: "",
-    observacoes: "",
+    observacoes: initialNotes ?? "",
   };
 // Validação só ao tentar avançar (trigger em goNext); o erro de um campo some assim que ele é editado.
   // Se a mensagem sumisse no blur, os botões abaixo pulariam de lugar no meio do clique e ele se perderia.
@@ -135,7 +145,7 @@ export function BookingWizard({ pets, services, today, firstDay, initialPetId, i
   }
 
   function startOver() {
-    reset({ ...defaultValues, petId: "", servico: "" });
+    reset({ ...defaultValues, petId: "", servico: "", observacoes: "" });
     setQuote(null);
     setBooking(null);
     setServerError(null);
