@@ -115,5 +115,10 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   página (não no layout). Open Graph gerado com `next/og` sem recursos externos. Sem `loading.tsx` global: ele
   transformava páginas estáticas em streaming (CLS 0,32); cada rota dinâmica tem esqueleto próprio.
   No Next 16, `error.tsx`/`global-error.tsx` recebem `retry` (não `reset`).
+- **Movimento (motion)**: `LazyMotion` + `m.*` (bundle menor) e `MotionConfig reducedMotion="user"` no layout.
+  `SplitText` e `Marquee` animam por CSS (`@keyframes`), começando no primeiro paint, sem esperar hidratação
+  (bom para LCP); `Reveal`, `MagneticButton` e futuros parallax/tilt usam motion. Só transform/opacity.
+  `CountUp` reserva a largura final (CLS 0) e expõe o valor final em sr-only. Marquee tem botão de pausa
+  (WCAG 2.2.2) e cópia `inert`. `/movimento` é vitrine temporária (sai na A6).
 
 @AGENTS.md

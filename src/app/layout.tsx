@@ -4,6 +4,7 @@ import { Nunito } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { SITE } from "@/lib/site";
 import { isIndexable, siteUrl } from "@/lib/site-url";
 import "./globals.css";
@@ -55,12 +56,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Pular para o conteúdo
         </a>
-        <SiteHeader />
-        <main id="conteudo" tabIndex={-1} className="flex-1 outline-none">
-          {children}
-        </main>
-        <SiteFooter />
-        <WhatsAppButton />
+        <MotionProvider>
+          <SiteHeader />
+          <main id="conteudo" tabIndex={-1} className="flex-1 outline-none">
+            {children}
+          </main>
+          <SiteFooter />
+          <WhatsAppButton />
+        </MotionProvider>
       </body>
     </html>
   );

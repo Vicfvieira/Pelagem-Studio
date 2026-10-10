@@ -79,3 +79,62 @@
     }
   }
 }
+
+/*
+ * Movimento (Etapa A1). Só transform e opacity: rodam no compositor, sem recalcular layout.
+ * Tudo é desligado em prefers-reduced-motion no bloco ao final.
+ */
+@keyframes split-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em) rotate(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer components {
+  .split-piece {
+    display: inline-block;
+    animation: split-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--split-delay, 0ms);
+  }
+  /* Disparo por rolagem: pausado até o elemento entrar na tela. */
+  [data-split-trigger="inview"]:not([data-inview="true"]) .split-piece {
+    animation-play-state: paused;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+    animation-direction: var(--marquee-direction, normal);
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track,
+  .marquee[data-paused="true"] .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-piece,
+  .marquee-track {
+    animation: none;
+  }
+  /* Sem rolagem automática: a faixa vira uma linha rolável manualmente. */
+  .marquee {
+    overflow-x: auto;
+  }
+}
