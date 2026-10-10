@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { StatsBand } from "@/components/content/stats-band";
 import { FeaturedServices } from "@/components/home/featured-services";
 import { Hero } from "@/components/home/hero";
 import { HowItWorks } from "@/components/home/how-it-works";
@@ -18,6 +19,7 @@ export default function HomePage() {
       <ServiceMarquee />
       <FeaturedServices />
       <HowItWorks />
+      <StatsBand />
       <Testimonials />
       <Location />
     </>

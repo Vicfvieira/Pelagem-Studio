@@ -1,52 +1,31 @@
 import { Star } from "lucide-react";
 
-/** Depoimentos FICTÍCIOS, criados para o portfólio. */
-const TESTIMONIALS = [
-  {
-    quote:
-      "A Paçoca morria de medo do secador e voltou para casa tranquila e cheirosa. Dá para ver o cuidado da equipe.",
-    author: "Marina S.",
-    pet: "tutora da Paçoca, Shih-tzu",
-  },
-  {
-    quote:
-      "O táxi dog salvou minha rotina. Agendo pelo celular em dois minutos e o Thor volta lindo no fim da tarde.",
-    author: "Rafael M.",
-    pet: "tutor do Thor, Golden Retriever",
-  },
-  {
-    quote:
-      "Gosto de saber o preço antes e de ver o lembrete do próximo banho. Atendimento pontual, sem fila.",
-    author: "Juliana P.",
-    pet: "tutora da Luna, vira-lata caramelo",
-  },
-];
+import { TestimonialsCarousel } from "@/components/content/testimonials-carousel";
+import { STATS } from "@/content/company";
+import { TESTIMONIALS } from "@/content/testimonials";
+import { formatNumberBR } from "@/lib/motion/text";
+
+const rating = STATS.find((stat) => stat.id === "rating");
 
 export function Testimonials() {
   return (
-    <section id="depoimentos" aria-labelledby="depoimentos-titulo" className="scroll-mt-20 bg-muted/60">
-      <div className="mx-auto max-w-6xl px-4 py-16">
-        <h2 id="depoimentos-titulo" className="mb-10 text-center text-3xl font-black tracking-tight">
-          Quem já veio, volta
-        </h2>
-        <ul className="grid gap-6 md:grid-cols-3">
-          {TESTIMONIALS.map((item) => (
-            <li key={item.author}>
-              <figure className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm">
-                <p className="flex gap-0.5" role="img" aria-label="Avaliação: 5 de 5 estrelas">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star key={i} className="size-5 fill-primary text-primary" aria-hidden="true" />
-                  ))}
-                </p>
-                <blockquote className="flex-1 text-base">“{item.quote}”</blockquote>
-                <figcaption className="text-sm">
-                  <span className="font-extrabold">{item.author}</span>
-                  <span className="text-muted-foreground"> · {item.pet}</span>
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
+    <section id="depoimentos" aria-labelledby="depoimentos-titulo" className="scroll-mt-20 overflow-hidden bg-muted/60">
+      <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="flex max-w-xl flex-col gap-2">
+            <h2 id="depoimentos-titulo" className="text-3xl font-black tracking-tight sm:text-4xl">
+              Quem já veio, volta
+            </h2>
+            <p className="text-muted-foreground">Histórias de tutores da zona oeste à zona sul, com nome do pet e tudo.</p>
+          </div>
+          {rating && (
+            <p className="flex items-center gap-2 rounded-full bg-card px-4 py-2 text-sm font-bold shadow-sm">
+              <Star className="size-5 fill-primary text-primary" aria-hidden="true" />
+              {formatNumberBR(rating.value, rating.decimals)} {rating.label}
+            </p>
+          )}
+        </div>
+        <TestimonialsCarousel items={TESTIMONIALS} />
       </div>
     </section>
   );

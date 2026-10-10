@@ -12,7 +12,7 @@ export function SiteHeader() {
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
         <Logo />
 
-        <nav aria-label="Menu principal" className="hidden md:block">
+        <nav aria-label="Menu principal" className="hidden lg:block">
           <ul className="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
@@ -27,7 +27,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Suspense fallback={<AccountActionsFallback variant="desktop" />}>
             <AccountActions variant="desktop" />
           </Suspense>

@@ -37,7 +37,7 @@ export function MobileNav({ account }: { account: ReactNode }) {
   const close = () => setOpen(false);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <Button
         ref={toggleRef}
         variant="ghost"

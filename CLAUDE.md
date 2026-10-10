@@ -127,5 +127,20 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   primeiro paint), CTAs e selos em sequência. Parallax só com mouse, via motion values (sem re-render), desligado com
   reduced motion. A "foto" é a ilustração própria até as fotos livres de direitos da A5. `AccountActions` chama
   `connection()` antes do `auth()` (o Auth.js gera valores aleatórios antes de ler cookies).
+- **Conteúdo institucional (A3)**: textos e dados fictícios em `src/content/*` (empresa, equipe, linha do tempo,
+  depoimentos, FAQ, artigos, vagas) e em `src/lib/site.ts` (CNPJ com dígitos verificadores inválidos de propósito,
+  redes só como texto, sem link). Regras citadas no FAQ/políticas vêm das constantes de `business-rules.ts`.
+  História: fundado em 2019 na Vila Mariana, mudou para a Vila Madalena em 2022 (endereço atual).
+- **Preços extras**: pelagem longa, adicionais e planos em `src/lib/pricing-extras.ts` (fonte única, também para o
+  simulador da A4). Plano = banho avulso do banco × banhos/mês com desconto, arredondado para baixo em reais (`quotePlan`,
+  testado). Pelagem longa e adicionais são confirmados na avaliação de chegada; o agendamento online cobra o serviço base.
+- **Abas e carrossel**: linha do tempo e FAQ seguem o padrão WAI-ARIA Tabs (setas, Home, End; só a aba ativa no Tab);
+  respostas do FAQ em `<details>`. Carrossel de depoimentos sem rolagem automática (scroll-snap + botões).
+- **Trabalhe conosco**: modelo `JobApplication` (migração `job_applications`), Server Action com Zod, limite de 5 envios
+  por 10 min por IP (em memória), campo-isca que finge sucesso e consentimento LGPD com data (`consentAt`).
+- **Artigos**: `/dicas/[slug]` com `generateStaticParams`. Com Cache Components não há `dynamicParams=false`; slug
+  desconhecido chama `notFound()`. Por causa do streaming, a 1ª resposta pode sair com status 200, mas com a página 404 e
+  `noindex` (`ensureStatic="navigation"` resolveria, mas o header lê a sessão e quebra o build).
+- **Menu**: 5 links no header a partir de `lg`; o resto está no mapa do site do rodapé (`SITEMAP_GROUPS`).
 
 @AGENTS.md

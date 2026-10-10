@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
+import { ARTICLES } from "@/content/articles";
 import { isIndexable, siteUrl } from "@/lib/site-url";
 
 afterEach(() => vi.unstubAllEnvs());
@@ -47,10 +48,14 @@ describe("robots e sitemap", () => {
   it("o sitemap só lista páginas públicas", () => {
     env({ VERCEL_PROJECT_PRODUCTION_URL: "pelagem-studio.vercel.app" });
     const urls = sitemap().map((entry) => entry.url);
-    expect(urls).toEqual([
-      "https://pelagem-studio.vercel.app/",
-      "https://pelagem-studio.vercel.app/servicos",
-      "https://pelagem-studio.vercel.app/cadastro",
-    ]);
+    const base = "https://pelagem-studio.vercel.app";
+    expect(urls).toEqual(
+      expect.arrayContaining([`${base}/`, `${base}/servicos`, `${base}/precos`, `${base}/sobre`, `${base}/dicas`]),
+    );
+    expect(urls.filter((url) => url.startsWith(`${base}/dicas/`))).toHaveLength(ARTICLES.length);
+    expect(new Set(urls).size).toBe(urls.length);
+    for (const privatePath of ["/minha-conta", "/agendar", "/entrar", "/api", "/movimento"]) {
+      expect(urls.some((url) => url.startsWith(`${base}${privatePath}`))).toBe(false);
+    }
   });
 });

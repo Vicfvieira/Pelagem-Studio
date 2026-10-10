@@ -16,6 +16,7 @@ type SplitTextProps = {
   /** "mount": ao carregar; "inView": quando entra na tela. */
   trigger?: "mount" | "inView";
   className?: string;
+  id?: string;
 };
 
 /**
@@ -34,6 +35,7 @@ export function SplitText({
   stagger,
   trigger = "mount",
   className,
+  id,
 }: SplitTextProps) {
   const step = stagger ?? (by === "letter" ? 28 : 90);
   let index = 0;
@@ -59,7 +61,7 @@ export function SplitText({
   );
 
   return (
-    <Tag className={cn(className)}>
+    <Tag id={id} className={cn(className)}>
       <span className="sr-only">{text}</span>
       {trigger === "inView" ? <InViewTrigger>{pieces}</InViewTrigger> : pieces}
     </Tag>

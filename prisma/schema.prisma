@@ -166,3 +166,34 @@ model Appointment {
   @@index([serviceId])
   @@index([taxiZoneId])
 }
+
+enum JobRole {
+  BANHISTA
+  TOSADOR
+  RECEPCAO
+  MOTORISTA
+}
+
+enum JobShift {
+  INTEGRAL
+  MANHA
+  TARDE
+}
+
+/// Candidaturas do "Trabalhe conosco". Dados pessoais: nunca saem pela API de integração.
+model JobApplication {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  role            JobRole
+  shift           JobShift
+  experienceYears Int
+  about           String
+  /// Instante em que a pessoa aceitou o uso dos dados para o processo seletivo (LGPD).
+  consentAt       DateTime @db.Timestamptz(3)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@index([role, createdAt])
+}
