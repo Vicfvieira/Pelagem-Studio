@@ -1,15 +1,24 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NAV_LINKS } from "@/lib/site";
 
 /** Menu mobile no padrão "disclosure": botão com aria-expanded controlando o painel. */
-export function MobileNav() {
+export function MobileNav({ account }: { account: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const [lastPathname, setLastPathname] = useState(pathname);
+
+  // Fecha o menu ao trocar de página (inclusive pelos botões de conta, renderizados no servidor).
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setOpen(false);
+  }
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
 
@@ -60,18 +69,7 @@ export function MobileNav() {
             </li>
           ))}
         </ul>
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <Button asChild variant="outline">
-            <Link href="/entrar" onClick={close}>
-              Entrar
-            </Link>
-          </Button>
-          <Button asChild>
-            <Link href="/agendar" onClick={close}>
-              Agendar
-            </Link>
-          </Button>
-        </div>
+        <div className="mt-4">{account}</div>
       </nav>
     </div>
   );

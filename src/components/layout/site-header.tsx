@@ -1,6 +1,7 @@
+import { Suspense } from "react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { AccountActions, AccountActionsFallback } from "@/components/layout/account-actions";
 import { Logo } from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { NAV_LINKS } from "@/lib/site";
@@ -26,16 +27,19 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Button asChild variant="ghost">
-            <Link href="/entrar">Entrar</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/agendar">Agendar</Link>
-          </Button>
+        <div className="hidden md:block">
+          <Suspense fallback={<AccountActionsFallback variant="desktop" />}>
+            <AccountActions variant="desktop" />
+          </Suspense>
         </div>
 
-        <MobileNav />
+        <MobileNav
+          account={
+            <Suspense fallback={<AccountActionsFallback variant="mobile" />}>
+              <AccountActions variant="mobile" />
+            </Suspense>
+          }
+        />
       </div>
     </header>
   );

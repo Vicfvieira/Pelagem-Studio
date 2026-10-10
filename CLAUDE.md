@@ -89,5 +89,10 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   (sem horário de verão desde 2019); conversões em `src/lib/business-rules.ts`, fonte única das regras.
 - **Seed**: tutores fictícios em `@example.com` (RFC 2606). Conta demo pública `demo@example.com` /
   `pelagem-demo`. Admin `admin@example.com` criado uma única vez com senha aleatória exibida no terminal.
+- **Auth**: Next 16 renomeou `middleware` para `proxy` (`src/proxy.ts`, roda em Node). Config leve em
+  `src/auth.config.ts` (sem Prisma/bcrypt) e completa em `src/auth.ts`. Páginas e ações protegidas checam a
+  sessão de novo com `requireUser` (o proxy não é a única barreira). `callbackUrl` só aceita caminhos internos.
+- **Login/cadastro sem enumeração**: mensagem genérica e tempo constante (hash bcrypt fictício quando o
+  e-mail não existe; hash gerado antes da checagem de duplicidade no cadastro).
 
 @AGENTS.md
