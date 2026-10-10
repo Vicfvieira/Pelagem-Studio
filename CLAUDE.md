@@ -105,5 +105,10 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   alerta em 30 dias, próximo banho = último banho concluído + 15 dias). Cancelar é um único `UPDATE` com
   dono + status + prazo no `WHERE` (atômico). Reforço de vacina marca a dose antiga como "dose anterior".
   Mutações usam `refresh()` (Next 16) para atualizar a página.
+- **API de integração** (`/api/integracao/*`): limite de 60 req/min por IP checado ANTES da chave (força bruta
+  também é limitada); `x-api-key` comparada com `timingSafeEqual` sobre SHA-256 dos dois lados; sem
+  `HASH_SALT` responde 503. Limite em memória = por instância serverless (global exigiria Redis/Upstash).
+  Seleção explícita de campos: nenhum dado pessoal; cliente vira `clienteHash`. Resumo calculado por
+  função pura (`summarize`), testada.
 
 @AGENTS.md
