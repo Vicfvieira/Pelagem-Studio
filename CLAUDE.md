@@ -120,5 +120,12 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   (bom para LCP); `Reveal`, `MagneticButton` e futuros parallax/tilt usam motion. Só transform/opacity.
   `CountUp` reserva a largura final (CLS 0) e expõe o valor final em sr-only. Marquee tem botão de pausa
   (WCAG 2.2.2) e cópia `inert`. `/movimento` é vitrine temporária (sai na A6).
+- **Tipografia (A2)**: títulos (h1–h3) em Fraunces com eixo SOFT (serifa arredondada), corpo em Nunito. Tokens de
+  `@theme inline` não viram variáveis CSS, por isso a regra base usa `var(--font-fraunces)` direto. Caramelo de
+  título `--primary-display` (#c2611e, 3,97:1) só em texto grande.
+- **Hero (A2)**: título com SplitText (CSS), subtítulo só com deslocamento (sem opacidade 0, para contar no LCP desde o
+  primeiro paint), CTAs e selos em sequência. Parallax só com mouse, via motion values (sem re-render), desligado com
+  reduced motion. A "foto" é a ilustração própria até as fotos livres de direitos da A5. `AccountActions` chama
+  `connection()` antes do `auth()` (o Auth.js gera valores aleatórios antes de ler cookies).
 
 @AGENTS.md

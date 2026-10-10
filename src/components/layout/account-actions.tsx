@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { LogOut, UserRound } from "lucide-react";
 
 import { auth } from "@/auth";
@@ -8,6 +9,9 @@ import { cn } from "@/lib/utils";
 
 /** Ações de conta no header. Lê a sessão, por isso é renderizado dentro de <Suspense>. */
 export async function AccountActions({ variant }: { variant: "desktop" | "mobile" }) {
+  // O Auth.js gera valores aleatórios antes de ler os cookies; `connection()` marca este trecho
+  // como de requisição (o restante do header continua no shell estático).
+  await connection();
   const session = await auth();
   const mobile = variant === "mobile";
   const wrapper = mobile ? "grid grid-cols-2 gap-3" : "flex items-center gap-2";

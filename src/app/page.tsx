@@ -4,6 +4,7 @@ import { FeaturedServices } from "@/components/home/featured-services";
 import { Hero } from "@/components/home/hero";
 import { HowItWorks } from "@/components/home/how-it-works";
 import { Location } from "@/components/home/location";
+import { ServiceMarquee } from "@/components/home/service-marquee";
 import { Testimonials } from "@/components/home/testimonials";
 import { PetStoreJsonLd } from "@/components/seo/pet-store-json-ld";
 
@@ -14,6 +15,7 @@ export default function HomePage() {
     <>
       <PetStoreJsonLd />
       <Hero />
+      <ServiceMarquee />
       <FeaturedServices />
       <HowItWorks />
       <Testimonials />

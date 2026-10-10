@@ -30,6 +30,8 @@
   --border: #ead9c6;
   --input: #ead9c6;
   --ring: #b85d1c;
+  /* Caramelo escuro para TÍTULOS grandes (3.97:1 no creme: AA só para texto ≥ 24px ou 19px bold). */
+  --primary-display: #c2611e;
 }
 
 @theme inline {
@@ -54,6 +56,7 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-primary-display: var(--primary-display);
 
   --radius-sm: calc(var(--radius) - 8px);
   --radius-md: calc(var(--radius) - 4px);
@@ -61,6 +64,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   --font-sans: var(--font-nunito);
+  --font-display: var(--font-fraunces), Georgia, serif;
 }
 
 @layer base {
@@ -72,6 +76,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Títulos na fonte de display; "SOFT" arredonda as serifas para combinar com o tom acolhedor. */
+  h1,
+  h2,
+  h3 {
+    /* var(--font-fraunces) direto: tokens de @theme inline não viram variáveis CSS. */
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-variation-settings: "SOFT" 100;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -104,7 +116,66 @@
   }
 }
 
+/* Hero (Etapa A2): entrada em sequência, selos flutuando e ponto "ao vivo". */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Só deslocamento, sem opacidade: o texto já conta como pintado no primeiro frame (bom para o LCP). */
+@keyframes slide-in {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
 @layer components {
+  .rise-in {
+    animation: rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  .slide-in {
+    animation: slide-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  .float-y {
+    animation: float-y var(--float-duration, 6s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0ms);
+  }
+  .pulse-ring {
+    animation: pulse-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
   .split-piece {
     display: inline-block;
     animation: split-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -130,7 +201,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .split-piece,
-  .marquee-track {
+  .marquee-track,
+  .rise-in,
+  .slide-in,
+  .float-y,
+  .pulse-ring {
     animation: none;
   }
   /* Sem rolagem automática: a faixa vira uma linha rolável manualmente. */
