@@ -17,6 +17,7 @@ import { petSizeSchema, serviceSlugSchema } from "@/lib/validation/availability"
 export const metadata: Metadata = {
   title: "Agendar",
   description: "Agende banho, tosa e táxi dog em poucos passos.",
+  robots: { index: false, follow: false },
 };
 
 type SearchParams = PageProps<"/agendar">["searchParams"];

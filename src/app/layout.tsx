@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { SITE } from "@/lib/site";
+import { isIndexable, siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -13,13 +14,35 @@ const nunito = Nunito({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Banho, tosa, hidratação e táxi dog com hora marcada em São Paulo. Agende online em poucos passos.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${SITE.name} · ${SITE.tagline}`,
     template: `%s · ${SITE.name}`,
   },
-  description:
-    "Banho, tosa, hidratação e táxi dog com hora marcada em São Paulo. Agende online em poucos passos.",
+  description: DESCRIPTION,
+  applicationName: SITE.name,
+  authors: [{ name: SITE.author }],
+  keywords: ["pet spa", "banho e tosa", "táxi dog", "São Paulo", "Vila Madalena", "agendamento online"],
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: SITE.name,
+    title: `${SITE.name} · ${SITE.tagline}`,
+    description: DESCRIPTION,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: SITE.name, description: DESCRIPTION },
+  // Previews e ambiente local não devem aparecer em buscadores.
+  robots: isIndexable() ? { index: true, follow: true } : { index: false, follow: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#E8833A",
+  colorScheme: "light",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

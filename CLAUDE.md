@@ -110,5 +110,10 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   `HASH_SALT` responde 503. Limite em memória = por instância serverless (global exigiria Redis/Upstash).
   Seleção explícita de campos: nenhum dado pessoal; cliente vira `clienteHash`. Resumo calculado por
   função pura (`summarize`), testada.
+- **SEO/deploy**: `siteUrl()` usa `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL`. Só
+  `VERCEL_ENV=production` é indexável (robots e meta robots); previews ficam fora dos buscadores. Canonical por
+  página (não no layout). Open Graph gerado com `next/og` sem recursos externos. Sem `loading.tsx` global: ele
+  transformava páginas estáticas em streaming (CLS 0,32); cada rota dinâmica tem esqueleto próprio.
+  No Next 16, `error.tsx`/`global-error.tsx` recebem `retry` (não `reset`).
 
 @AGENTS.md

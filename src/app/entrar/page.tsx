@@ -7,6 +7,7 @@ import { LoginForm } from "@/components/auth/login-form";
 export const metadata: Metadata = {
   title: "Entrar",
   description: "Entre na sua conta do Pelagem Studio para agendar e acompanhar os banhos do seu pet.",
+  robots: { index: false, follow: true },
 };
 
 export default function LoginPage() {

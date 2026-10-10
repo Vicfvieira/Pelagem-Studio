@@ -7,6 +7,7 @@ import { RegisterForm } from "@/components/auth/register-form";
 export const metadata: Metadata = {
   title: "Criar conta",
   description: "Crie sua conta no Pelagem Studio e agende banho e tosa online.",
+  robots: { index: false, follow: true },
 };
 
 export default function RegisterPage() {

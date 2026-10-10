@@ -12,7 +12,7 @@ import { signOutAction } from "@/lib/auth/actions";
 import { requireUser } from "@/lib/auth/session";
 import { getAccountOverview } from "@/lib/data/account";
 
-export const metadata: Metadata = { title: "Minha conta" };
+export const metadata: Metadata = { title: "Minha conta", robots: { index: false, follow: false } };
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (

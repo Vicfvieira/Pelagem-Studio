@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Serviços e preços",
   description:
     "Banho, tosa, hidratação e corte de unhas com preço e duração por porte (P, M e G). Agende online.",
+  alternates: { canonical: "/servicos" },
 };
 
 function joinNames(names: string[]): string {
