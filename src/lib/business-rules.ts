@@ -54,3 +54,10 @@ export function addDaysToDate(localDate: string, days: number): string {
   const [year, month, day] = localDate.split("-").map(Number);
   return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
 }
+
+/** Rótulos dos portes para a interface. */
+export const PET_SIZE_LABELS: Record<PetSizeCode, { name: string; range: string }> = {
+  P: { name: "Pequeno", range: "até 10 kg" },
+  M: { name: "Médio", range: "de 10 a 25 kg" },
+  G: { name: "Grande", range: "acima de 25 kg" },
+};
