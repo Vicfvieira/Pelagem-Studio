@@ -4,6 +4,7 @@
 /*
  * Tokens do shadcn/ui com a identidade do Pelagem Studio.
  * Texto sobre caramelo/menta usa #2B2B2B: branco sobre #E8833A não atinge contraste AA.
+ * Para TEXTO colorido sobre o creme, use as versões "strong" (contraste ≥ 4.5:1).
  */
 :root {
   --radius: 1rem; /* rounded-2xl */
@@ -18,6 +19,8 @@
   --primary-foreground: #2b2b2b;
   --secondary: #5bbfa0;
   --secondary-foreground: #2b2b2b;
+  --primary-strong: #a3501a;
+  --secondary-strong: #1f6b54;
   --muted: #f6ebdf;
   --muted-foreground: #5c5249;
   --accent: #fde6d2;
@@ -40,6 +43,8 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary-strong: var(--primary-strong);
+  --color-secondary-strong: var(--secondary-strong);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
@@ -55,15 +60,22 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-nunito);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 }
