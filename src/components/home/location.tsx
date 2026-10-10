@@ -39,8 +39,12 @@ export function Location() {
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-2">
         <div className="flex flex-col gap-5">
           <h2 id="localizacao-titulo" className="text-3xl font-black tracking-tight">
-            Venha nos visitar
+            Na Vila Madalena, a 7 minutos a pé do metrô
           </h2>
+          <p className="text-muted-foreground">
+            Saindo da estação Vila Madalena (Linha 2-Verde), são duas quadras de subida. Na frente do estúdio há uma
+            vaga reservada para embarque e desembarque de pets.
+          </p>
           <ul className="flex flex-col gap-4">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 size-5 shrink-0 text-primary-strong" aria-hidden="true" />

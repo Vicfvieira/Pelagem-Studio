@@ -61,6 +61,7 @@ export const SITEMAP_GROUPS = [
     links: [
       { href: "/perguntas-frequentes", label: "Perguntas frequentes" },
       { href: "/politicas", label: "Políticas de atendimento" },
+      { href: "/creditos", label: "Créditos" },
       { href: "/#localizacao", label: "Como chegar" },
     ],
   },

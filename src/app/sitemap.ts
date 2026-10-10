@@ -13,6 +13,7 @@ const PAGES: ReadonlyArray<{ path: string; changeFrequency: "weekly" | "monthly"
   { path: "/politicas", changeFrequency: "yearly", priority: 0.5 },
   { path: "/dicas", changeFrequency: "weekly", priority: 0.6 },
   { path: "/trabalhe-conosco", changeFrequency: "monthly", priority: 0.4 },
+  { path: "/creditos", changeFrequency: "yearly", priority: 0.2 },
   { path: "/cadastro", changeFrequency: "yearly", priority: 0.4 },
 ];
 

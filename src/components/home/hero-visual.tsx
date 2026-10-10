@@ -2,16 +2,10 @@
 
 import { useEffect, type CSSProperties, type ReactNode } from "react";
 import { Car, Check, Leaf, ShieldCheck } from "lucide-react";
-import {
-  m,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "motion/react";
+import { m, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
 import { HeroIllustration } from "@/components/home/hero-illustration";
+import { Photo } from "@/components/media/photo";
 import { cn } from "@/lib/utils";
 
 /** Deslocamento máximo (px) da camada mais "próxima". Leve de propósito. */
@@ -112,11 +106,16 @@ export function HeroVisual({ className }: { className?: string }) {
         <div className="size-full rounded-full bg-primary/20" />
       </Layer>
 
-      {/* "Foto" recortada: ilustração própria até a foto definitiva (A5). */}
+      {/* Foto recortada em forma orgânica (ou a ilustração própria, enquanto não há foto com crédito). */}
       <Layer x={x} y={y} depth={0.35} className="inset-[10%]">
         <div className="relative size-full overflow-hidden rounded-[46%_54%_42%_58%/52%_44%_56%_48%] bg-gradient-to-br from-accent to-[#ffd9b8] shadow-2xl shadow-primary/20">
           <div className="absolute inset-0 [background-image:radial-gradient(#e8833a_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
-          <HeroIllustration className="absolute inset-x-0 bottom-0 w-full" />
+          <Photo
+            slot="hero"
+            priority
+            sizes="(min-width: 768px) 440px, 80vw"
+            fallback={<HeroIllustration className="absolute inset-x-0 bottom-0 w-full" />}
+          />
         </div>
       </Layer>
 

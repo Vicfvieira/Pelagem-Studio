@@ -8,6 +8,7 @@ import { Location } from "@/components/home/location";
 import { ServiceMarquee } from "@/components/home/service-marquee";
 import { Testimonials } from "@/components/home/testimonials";
 import { Transformations } from "@/components/home/transformations";
+import { WhyBento } from "@/components/home/why-bento";
 import { PetStoreJsonLd } from "@/components/seo/pet-store-json-ld";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -18,6 +19,7 @@ export default function HomePage() {
       <PetStoreJsonLd />
       <Hero />
       <ServiceMarquee />
+      <WhyBento />
       <FeaturedServices />
       <HowItWorks />
       <Transformations />

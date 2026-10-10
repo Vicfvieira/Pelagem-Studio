@@ -156,5 +156,12 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   clip-path e divisória com transform. Ilustrações próprias até as fotos da A5.
 - **Microinterações**: `TiltCard` (motion values, só mouse, máx. 5°) em serviços, planos e equipe; botões afundam 3% ao
   clicar (desligado com reduced motion).
+- **Fotos e créditos (A5)**: cadastro único em `src/content/photos.ts` (slot, alt, arquivo em /public/fotos, autor, fonte,
+  licença). `<Photo>` usa next/image e SÓ publica foto com crédito; sem ela, mostra a ilustração própria do slot.
+  `/creditos` lista fotos publicadas, ilustrações, fontes (OFL) e ícones (ISC). A rede deste ambiente bloqueia
+  Unsplash/Pexels, então as fotos entram quando houver acesso ou arquivos enviados.
+- **Layouts (A5)**: bento de diferenciais na home (dados reais: capacidade, taxas do táxi do banco, etapas, plano),
+  serviços em grade assimétrica, passos em zigue-zague com caminho tracejado, bordas onduladas (`OrganicDivider`) e
+  textura de papel/pontilhado (`.texture-paper`, `.texture-dots`, estáticas).
 
 @AGENTS.md

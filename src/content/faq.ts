@@ -100,7 +100,7 @@ export const FAQ: readonly FaqCategory[] = [
       {
         question: "Vocês atendem fora da capital?",
         answer:
-          "O táxi dog atende só a cidade de São Paulo. Pets de outras cidades são bem-vindos no estúdio, trazidos pelo tutor.",
+          "O táxi dog atende só a cidade de São Paulo. Pets de outras cidades podem vir ao estúdio com o tutor, no horário marcado.",
       },
       {
         question: "Como o pet é transportado?",

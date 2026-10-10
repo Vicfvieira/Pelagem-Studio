@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 
 import { BeforeAfter } from "@/components/home/before-after";
 import { Button } from "@/components/ui/button";
+import { PHOTOS } from "@/content/photos";
 import { formatCents } from "@/lib/format";
 import { ADDONS } from "@/lib/pricing-extras";
 
@@ -13,9 +14,13 @@ export function Transformations() {
   return (
     <section aria-labelledby="antes-depois-titulo" className="overflow-hidden">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1.2fr_1fr]">
-        <BeforeAfter caption="Ilustração do caso da Mel. Arraste a divisória ou use as setas do teclado." />
+        <BeforeAfter
+          caption={`${PHOTOS.antes.src ? "Caso da Mel" : "Ilustração do caso da Mel"}. Arraste a divisória ou use as setas do teclado.`}
+        />
         <div className="flex flex-col gap-5">
-          <p className="w-fit rounded-full bg-accent px-3 py-1 text-xs font-extrabold text-primary-strong">Antes e depois</p>
+          <p className="w-fit rounded-full bg-accent px-3 py-1 text-xs font-extrabold text-primary-strong">
+            Antes e depois
+          </p>
           <h2 id="antes-depois-titulo" className="text-3xl font-black tracking-tight sm:text-4xl">
             Mel chegou embolada. Saiu leve.
           </h2>
