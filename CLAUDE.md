@@ -85,5 +85,9 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
 - **shadcn/ui**: `components.json`, `src/lib/utils.ts` (`cn`) e tokens de tema em `globals.css`.
   Componentes ficam em `src/components/ui`.
 - **Contraste**: texto sobre caramelo e menta usa `#2B2B2B` (branco sobre `#E8833A` não passa no AA).
+- **Datas**: instantes em `timestamptz` (UTC); datas puras em `@db.Date`. São Paulo é UTC-03:00 fixo
+  (sem horário de verão desde 2019); conversões em `src/lib/business-rules.ts`, fonte única das regras.
+- **Seed**: tutores fictícios em `@example.com` (RFC 2606). Conta demo pública `demo@example.com` /
+  `pelagem-demo`. Admin `admin@example.com` criado uma única vez com senha aleatória exibida no terminal.
 
 @AGENTS.md
