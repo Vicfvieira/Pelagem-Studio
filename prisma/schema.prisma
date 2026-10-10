@@ -8,9 +8,10 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  // Neon: URL com pooling (pgbouncer) para a aplicação
+  // Neon COM pooling (host "-pooler"), usada pela aplicação em runtime (serverless na Vercel).
+  // Precisa de "pgbouncer=true": o PgBouncer em modo transação não suporta prepared statements.
   url       = env("DATABASE_URL")
-  // Neon: conexão direta, usada pelo prisma migrate
+  // Neon DIRETA (sem "-pooler"), usada pelo `prisma migrate` (migrações não passam pelo pooler).
   directUrl = env("DIRECT_URL")
 }
 
