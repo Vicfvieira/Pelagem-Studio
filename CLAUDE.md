@@ -94,5 +94,12 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   sessão de novo com `requireUser` (o proxy não é a única barreira). `callbackUrl` só aceita caminhos internos.
 - **Login/cadastro sem enumeração**: mensagem genérica e tempo constante (hash bcrypt fictício quando o
   e-mail não existe; hash gerado antes da checagem de duplicidade no cadastro).
+- **Agendamento**: `bookAppointment` (src/lib/booking/book.ts) confere o dono do pet, lê preço/duração pelo
+  porte do pet e recota o táxi; grava numa transação com `pg_advisory_xact_lock` por dia, então pedidos
+  simultâneos nunca estouram a capacidade (testado: 6 pedidos paralelos → 2 confirmados).
+- **ViaCEP**: consultado no servidor, resposta validada com Zod, timeout de 5 s, cidade checada pelo código
+  IBGE (3550308). `VIACEP_BASE_URL` existe só para testes locais.
+- **Formulário em passos**: erros aparecem ao tentar avançar e somem ao editar o campo (evita o botão
+  mudar de lugar no meio do clique).
 
 @AGENTS.md

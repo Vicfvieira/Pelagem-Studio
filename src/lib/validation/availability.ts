@@ -20,3 +20,11 @@ export const availabilityQuerySchema = z.object({
 });
 
 export type AvailabilityQuery = z.infer<typeof availabilityQuerySchema>;
+
+/** Formato da resposta de GET /api/disponibilidade (consumido pelo assistente de agendamento). */
+export type AvailabilityResponse = {
+  motivo: string | null;
+  mensagem: string | null;
+  duracaoMinutos: number;
+  horarios: Array<{ inicio: string; fim: string; hora: string; vagas: number }>;
+};

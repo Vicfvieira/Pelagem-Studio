@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 
-import { addDaysToDate, saoPauloDateTime } from "@/lib/business-rules";
+import { addDaysToDate, saoPauloDateTime, toSaoPauloDate } from "@/lib/business-rules";
 import { prisma } from "@/lib/prisma";
 import { getAvailableSlots, type UnavailableReason } from "@/lib/scheduling";
 import { availabilityQuerySchema } from "@/lib/validation/availability";
@@ -47,12 +47,21 @@ export async function GET(request: NextRequest) {
     select: { startAt: true, endAt: true },
   });
 
+  const now = new Date();
   const { slots, reason } = getAvailableSlots({
     date: data,
     durationMinutes: price.durationMinutes,
     appointments,
-    now: new Date(),
+    now,
   });
+
+  let message: string | null = reason ? REASON_MESSAGES[reason] : null;
+  if (!reason && slots.length === 0) {
+    message =
+      data === toSaoPauloDate(now)
+        ? "Não há mais horários hoje para este serviço. Escolha outra data."
+        : "Dia lotado. Tente outra data.";
+  }
 
   return Response.json(
     {
@@ -62,7 +71,7 @@ export async function GET(request: NextRequest) {
       duracaoMinutos: price.durationMinutes,
       precoCentavos: price.priceCents,
       motivo: reason,
-      mensagem: reason ? REASON_MESSAGES[reason] : slots.length === 0 ? "Dia lotado. Tente outra data." : null,
+      mensagem: message,
       horarios: slots.map((slot) => ({
         inicio: slot.startAt,
         fim: slot.endAt,

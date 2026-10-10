@@ -61,3 +61,19 @@ export const PET_SIZE_LABELS: Record<PetSizeCode, { name: string; range: string 
   M: { name: "Médio", range: "de 10 a 25 kg" },
   G: { name: "Grande", range: "acima de 25 kg" },
 };
+
+/** Instante → horário local de São Paulo "HH:mm". */
+export function toSaoPauloTime(instant: Date): string {
+  const local = new Date(instant.getTime() + SAO_PAULO_UTC_OFFSET_MINUTES * 60_000);
+  return local.toISOString().slice(11, 16);
+}
+
+/** Próximos `count` dias de funcionamento a partir de `from` (inclusive), dentro do limite de antecedência. */
+export function nextOpenDays(from: string, count: number): string[] {
+  const days: string[] = [];
+  const last = addDaysToDate(from, MAX_DAYS_AHEAD);
+  for (let day = from; day <= last && days.length < count; day = addDaysToDate(day, 1)) {
+    if (OPEN_WEEKDAYS.includes(weekdayOf(day))) days.push(day);
+  }
+  return days;
+}
