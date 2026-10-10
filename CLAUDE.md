@@ -101,5 +101,9 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   IBGE (3550308). `VIACEP_BASE_URL` existe só para testes locais.
 - **Formulário em passos**: erros aparecem ao tentar avançar e somem ao editar o campo (evita o botão
   mudar de lugar no meio do clique).
+- **Minha conta**: regras puras em `src/lib/account/rules.ts` (cancelamento ≥ 24h, situação da vacina com
+  alerta em 30 dias, próximo banho = último banho concluído + 15 dias). Cancelar é um único `UPDATE` com
+  dono + status + prazo no `WHERE` (atômico). Reforço de vacina marca a dose antiga como "dose anterior".
+  Mutações usam `refresh()` (Next 16) para atualizar a página.
 
 @AGENTS.md

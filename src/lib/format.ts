@@ -30,3 +30,10 @@ export function formatShortDate(localDate: string): string {
 export function formatCep(digits: string): string {
   return digits.length === 8 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
 }
+
+const numericDate = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" });
+
+/** "2025-10-14" → "14/10/2025" */
+export function formatNumericDate(localDate: string): string {
+  return numericDate.format(new Date(`${localDate}T00:00:00Z`));
+}
