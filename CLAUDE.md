@@ -168,7 +168,8 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   usa `Reveal` (que começa invisível até o JS); usa `.slide-in` (CSS, só transform). Estrelas e patinhas repetidas são
   máscaras CSS (`.rating-stars`, `.icon-paw`) em vez de dezenas de `<svg>`. Cartões do carrossel e imagens do hero e do
   antes/depois são renderizados no servidor e passados como `ReactNode` aos componentes cliente (menos hidratação).
-  Formulários de pet e vacina (react-hook-form + Zod) carregam com `next/dynamic` só ao abrir. Em /minha-conta, o
+  Formulários de pet e vacina (react-hook-form + Zod) carregam com `next/dynamic` só ao abrir. O de "Trabalhe conosco"
+  só carrega perto de entrar na tela (IntersectionObserver), com espaço reservado da mesma altura. Em /minha-conta, o
   título fica fora do `Suspense` (pintado antes dos dados). Transições só de `transform`/`opacity` (barra do
   agendamento usa `scaleX`). Lighthouse medido como mediana de 3 rodadas (a nota simulada oscila ±5 neste ambiente).
 

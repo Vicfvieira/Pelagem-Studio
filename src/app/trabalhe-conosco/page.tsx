@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Check, Sparkles } from "lucide-react";
 
-import { ApplicationForm } from "@/components/careers/application-form";
+import { DeferredApplicationForm } from "@/components/careers/deferred-application-form";
 import { PageHeader } from "@/components/content/page-header";
 import { BENEFITS, JOB_ROLES } from "@/content/careers";
 import { SITE } from "@/lib/site";
@@ -75,7 +75,7 @@ export default function CareersPage() {
             </h2>
             <p className="text-sm text-muted-foreground">Leva uns 3 minutos. Todos os campos são obrigatórios.</p>
           </div>
-          <ApplicationForm />
+          <DeferredApplicationForm />
         </section>
       </div>
     </div>
