@@ -1,22 +1,21 @@
+"use client";
+
 import Link from "next/link";
-import { connection } from "next/server";
 import { LogOut, UserRound } from "lucide-react";
 
-import { auth } from "@/auth";
+import { useSessionUser } from "@/components/layout/use-session-user";
 import { Button } from "@/components/ui/button";
 import { signOutAction } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
 
-/** Ações de conta no header. Lê a sessão, por isso é renderizado dentro de <Suspense>. */
-export async function AccountActions({ variant }: { variant: "desktop" | "mobile" }) {
-  // O Auth.js gera valores aleatórios antes de ler os cookies; `connection()` marca este trecho
-  // como de requisição (o restante do header continua no shell estático).
-  await connection();
-  const session = await auth();
+/** Ações de conta no header. A sessão é lida no navegador (ver use-session-user.ts). */
+export function AccountActions({ variant }: { variant: "desktop" | "mobile" }) {
+  const user = useSessionUser();
+  if (user === undefined) return <AccountActionsFallback variant={variant} />;
   const mobile = variant === "mobile";
   const wrapper = mobile ? "grid grid-cols-2 gap-3" : "flex items-center gap-2";
 
-  if (!session?.user) {
+  if (!user) {
     return (
       <div className={wrapper}>
         <Button asChild variant={mobile ? "outline" : "ghost"}>

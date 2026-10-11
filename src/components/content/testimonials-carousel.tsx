@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
-
-import type { Testimonial } from "@/content/testimonials";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 /**
  * Carrossel sem rolagem automática (o tutor controla o ritmo): faixa com scroll-snap, que também
  * funciona com o dedo, e botões anterior/próximo. Cada cartão é um "slide" com posição anunciada.
  * Com prefers-reduced-motion, a rolagem dos botões é instantânea.
+ * Os cartões chegam prontos do servidor (`slides`), então o cliente não precisa renderizá-los.
  */
-export function TestimonialsCarousel({ items }: { items: readonly Testimonial[] }) {
+export function TestimonialsCarousel({ slides }: { slides: ReadonlyArray<{ key: string; node: ReactNode }> }) {
   const track = useRef<HTMLUListElement>(null);
   const [edges, setEdges] = useState({ start: true, end: false });
 
@@ -41,46 +39,19 @@ export function TestimonialsCarousel({ items }: { items: readonly Testimonial[] 
   }
 
   return (
-    <div role="region" aria-roledescription="carrossel" aria-label="Depoimentos de tutores" className="flex flex-col gap-6">
+    <div
+      role="region"
+      aria-roledescription="carrossel"
+      aria-label="Depoimentos de tutores"
+      className="flex flex-col gap-6"
+    >
       <ul
         ref={track}
         className="-mx-4 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-4 px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {items.map((item, index) => (
-          <li
-            key={item.tutor}
-            className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
-          >
-            <figure
-              aria-roledescription="depoimento"
-              aria-label={`${index + 1} de ${items.length}: ${item.tutor}`}
-              className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
-            >
-              <div className="flex items-center justify-between">
-                <p className="flex gap-0.5" role="img" aria-label={`Avaliação: ${item.rating} de 5 estrelas`}>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <Star
-                      key={i}
-                      className={cn("size-5", i < item.rating ? "fill-primary text-primary" : "text-border")}
-                      aria-hidden="true"
-                    />
-                  ))}
-                </p>
-                <Quote className="size-8 text-secondary/60" aria-hidden="true" />
-              </div>
-              <blockquote className="flex-1 text-base leading-relaxed">“{item.quote}”</blockquote>
-              <figcaption className="flex flex-col gap-1 border-t pt-4 text-sm">
-                <span className="font-extrabold">
-                  {item.tutor} <span className="font-semibold text-muted-foreground">· {item.neighborhood}</span>
-                </span>
-                <span className="text-muted-foreground">
-                  {item.pet}, {item.breed}
-                </span>
-                <span className="w-fit rounded-full bg-accent px-3 py-0.5 text-xs font-bold text-primary-strong">
-                  {item.service}
-                </span>
-              </figcaption>
-            </figure>
+        {slides.map((slide) => (
+          <li key={slide.key} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
+            {slide.node}
           </li>
         ))}
       </ul>

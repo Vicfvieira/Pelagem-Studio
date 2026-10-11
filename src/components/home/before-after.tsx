@@ -1,17 +1,21 @@
 "use client";
 
-import { useId, useState, type CSSProperties } from "react";
+import { useId, useState, type CSSProperties, type ReactNode } from "react";
 import { MoveHorizontal } from "lucide-react";
-
-import { GroomingIllustration } from "@/components/home/grooming-illustration";
-import { Photo } from "@/components/media/photo";
 
 /**
  * Comparador antes/depois. Um <input type="range"> transparente cobre a imagem: arrastar com mouse
  * ou dedo, ou usar as setas do teclado, move a divisória. O "antes" é recortado com clip-path e a
  * divisória anda com transform (sem recalcular layout).
  */
-export function BeforeAfter({ caption }: { caption: string }) {
+type BeforeAfterProps = {
+  /** Imagens renderizadas no servidor (foto ou ilustração): o cliente só cuida da divisória. */
+  before: ReactNode;
+  after: ReactNode;
+  caption: string;
+};
+
+export function BeforeAfter({ before, after, caption }: BeforeAfterProps) {
   const id = useId();
   const [position, setPosition] = useState(50);
   const style = { "--pos": `${position}%` } as CSSProperties;
@@ -22,20 +26,8 @@ export function BeforeAfter({ caption }: { caption: string }) {
         className="group relative aspect-[4/3] w-full touch-pan-y overflow-hidden rounded-2xl border bg-muted shadow-lg select-none"
         style={style}
       >
-        <div className="absolute inset-0">
-          <Photo
-            slot="depois"
-            sizes="(min-width: 768px) 600px, 100vw"
-            fallback={<GroomingIllustration variant="depois" />}
-          />
-        </div>
-        <div className="absolute inset-0 [clip-path:inset(0_calc(100%-var(--pos))_0_0)]">
-          <Photo
-            slot="antes"
-            sizes="(min-width: 768px) 600px, 100vw"
-            fallback={<GroomingIllustration variant="antes" />}
-          />
-        </div>
+        <div className="absolute inset-0">{after}</div>
+        <div className="absolute inset-0 [clip-path:inset(0_calc(100%-var(--pos))_0_0)]">{before}</div>
 
         <span
           className="absolute top-3 left-3 rounded-full bg-foreground/85 px-3 py-1 text-xs font-extrabold text-background"

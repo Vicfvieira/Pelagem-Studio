@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { Heart, Eye, Leaf } from "lucide-react";
 
@@ -37,21 +38,21 @@ export default function AboutPage() {
         </PageHeader>
 
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
-          <Reveal className="flex flex-col justify-center gap-4 rounded-2xl bg-primary p-8 md:p-10">
+          {/* Topo da página: entrada por CSS (só transform), visível desde o primeiro paint (LCP). */}
+          <div className="slide-in flex flex-col justify-center gap-4 rounded-2xl bg-primary p-8 md:p-10">
             <h2 className="text-sm font-extrabold tracking-wide uppercase">Nossa missão</h2>
             <p className="font-[family-name:var(--font-fraunces)] text-2xl leading-snug font-bold sm:text-3xl">
               {MISSION}
             </p>
-          </Reveal>
+          </div>
           <ul className="flex flex-col gap-4">
             {VALUES.map((value, index) => {
               const Icon = VALUE_ICONS[index];
               return (
-                <Reveal
-                  as="li"
+                <li
                   key={value.title}
-                  delay={index * 0.08}
-                  className="flex gap-4 rounded-2xl border bg-card p-5"
+                  className="slide-in flex gap-4 rounded-2xl border bg-card p-5"
+                  style={{ "--rise-delay": `${150 + index * 80}ms` } as CSSProperties}
                 >
                   <span
                     className="grid size-11 shrink-0 place-items-center rounded-2xl bg-secondary/25"
@@ -63,7 +64,7 @@ export default function AboutPage() {
                     <h3 className="text-lg font-black">{value.title}</h3>
                     <p className="text-sm text-muted-foreground">{value.text}</p>
                   </div>
-                </Reveal>
+                </li>
               );
             })}
           </ul>
@@ -96,7 +97,7 @@ export default function AboutPage() {
             {TEAM.map((member, index) => (
               <Reveal as="li" key={member.name} delay={(index % 3) * 0.08}>
                 <TiltCard>
-                  <article className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm transition-shadow duration-300 hover:shadow-lg">
+                  <article className="flex h-full flex-col gap-4 rounded-2xl border bg-card p-6 shadow-sm hover:shadow-lg">
                     <div className="flex items-center gap-4">
                       <div className="size-20 shrink-0">
                         <TeamAvatar name={member.name} tone={member.tone} />

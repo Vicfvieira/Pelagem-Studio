@@ -14,6 +14,9 @@ import { formatNumericDate } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import { siteUrl } from "@/lib/site-url";
 
+// Página 100% estática: um slug fora da lista espera a renderização completa, então notFound() responde 404 de verdade.
+export const ensureStatic = "navigation";
+
 export function generateStaticParams() {
   return ARTICLES.map((article) => ({ slug: article.slug }));
 }

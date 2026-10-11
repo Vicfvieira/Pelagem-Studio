@@ -81,7 +81,7 @@ export function StepDateTime({ today, firstDay, servico, size, refreshToken }: S
                 clearErrors("data");
               }}
               className={cn(
-                "min-h-11 rounded-2xl border-2 px-3 text-sm font-bold capitalize outline-none transition-colors",
+                "min-h-11 rounded-2xl border-2 px-3 text-sm font-bold capitalize outline-none",
                 "hover:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/60",
                 date === day ? "border-primary bg-accent" : "bg-card",
               )}
@@ -133,7 +133,7 @@ export function StepDateTime({ today, firstDay, servico, size, refreshToken }: S
               <label
                 key={slot.inicio}
                 className={cn(
-                  "relative flex cursor-pointer flex-col items-center rounded-2xl border-2 bg-card px-2 py-2.5 transition-colors",
+                  "relative flex cursor-pointer flex-col items-center rounded-2xl border-2 bg-card px-2 py-2.5",
                   "hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-accent",
                   "has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60",
                 )}

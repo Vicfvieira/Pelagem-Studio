@@ -16,7 +16,7 @@ import { jobApplicationSchema, type JobApplicationInput } from "@/lib/validation
 
 const ABOUT_MAX = 1000;
 const fieldClass =
-  "w-full rounded-2xl border-2 border-input bg-card px-4 text-base outline-none transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40 aria-invalid:border-destructive";
+  "w-full rounded-2xl border-2 border-input bg-card px-4 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/40 aria-invalid:border-destructive";
 
 export function ApplicationForm() {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -93,7 +93,7 @@ export function ApplicationForm() {
           {JOB_ROLES.map((role) => (
             <label
               key={role.id}
-              className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 bg-card p-4 transition-colors has-[:checked]:border-primary has-[:checked]:bg-accent has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60"
+              className="flex cursor-pointer items-start gap-3 rounded-2xl border-2 bg-card p-4 has-[:checked]:border-primary has-[:checked]:bg-accent has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60"
             >
               <input type="radio" value={role.id} className="mt-1 size-4 accent-[#a3501a]" {...register("role")} />
               <span className="flex flex-col">

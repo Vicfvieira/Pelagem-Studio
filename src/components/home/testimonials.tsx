@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 
 import { OrganicDivider } from "@/components/layout/organic-divider";
+import { TestimonialCard } from "@/components/content/testimonial-card";
 import { TestimonialsCarousel } from "@/components/content/testimonials-carousel";
 import { STATS } from "@/content/company";
 import { TESTIMONIALS } from "@/content/testimonials";
@@ -30,7 +31,12 @@ export function Testimonials() {
               </p>
             )}
           </div>
-          <TestimonialsCarousel items={TESTIMONIALS} />
+          <TestimonialsCarousel
+            slides={TESTIMONIALS.map((item, index) => ({
+              key: item.tutor,
+              node: <TestimonialCard item={item} position={index + 1} total={TESTIMONIALS.length} />,
+            }))}
+          />
         </div>
       </div>
       <OrganicDivider flip className="text-muted" />

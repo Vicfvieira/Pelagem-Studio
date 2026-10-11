@@ -24,16 +24,24 @@ capacidade, táxi dog com CEP, área do tutor e uma API de integração para das
 | **Autenticação** | Auth.js v5 com credenciais, bcrypt, JWT em cookie `httpOnly`, rotas protegidas pelo `proxy` (Next 16) **e** de novo em cada página/ação, sem enumeração de contas (mensagem e tempo constantes), `callbackUrl` só interno. |
 | **Segurança da API** | `x-api-key` com `crypto.timingSafeEqual`, limite de 60 req/min por IP antes da autenticação, nenhum dado pessoal (cliente vira `SHA-256(id + salt)`). |
 | **Integrações** | ViaCEP consultado no servidor, com timeout, resposta validada por Zod e cidade checada pelo código IBGE. |
-| **UI e acessibilidade** | Tailwind + shadcn/ui, mobile first, rádios nativos estilizados, foco gerenciado no assistente, contraste AA verificado, Lighthouse ≥ 92 em Performance e 100 em Acessibilidade/SEO. |
-| **Qualidade** | TypeScript estrito sem `any`, Zod no cliente e no servidor, 111 testes Vitest, seed idempotente e determinístico. |
+| **UI e acessibilidade** | Tailwind + shadcn/ui, mobile first, abas e carrossel no padrão WAI-ARIA, foco visível em todos os elementos (auditado com teclado), contraste AA, Lighthouse mobile ≥ 90 em Performance e 100 em Acessibilidade. |
+| **Tempo real** | "Acompanhe o banho": etapa salva no banco, tela do tutor atualizada a cada 30 s (pausa com a aba oculta) e anunciada a leitores de tela; painel da equipe com atualização atômica. |
+| **Movimento** | Animações só com `transform`/`opacity`, texto animado por CSS desde o primeiro paint, parallax e tilt só com mouse, tudo desligado com `prefers-reduced-motion`. |
+| **Qualidade** | TypeScript estrito sem `any`, Zod no cliente e no servidor, 138 testes Vitest, seed idempotente e determinístico. |
 
 ### Funcionalidades
 
-- **Home**: hero, serviços em destaque (do banco, em cache), como funciona, depoimentos e localização.
+- **Home**: hero animado com selos em parallax, faixas de serviços e bairros, diferenciais em bento, serviços em
+  destaque (do banco, em cache), como funciona, antes e depois com slider, números, depoimentos em carrossel e
+  localização.
+- **Páginas institucionais**: /sobre (linha do tempo e equipe), /seguranca, /precos (simulador de orçamento,
+  pelagem longa, adicionais e planos), /politicas, /perguntas-frequentes (17 perguntas em abas), /dicas (6 artigos),
+  /trabalhe-conosco (formulário com Zod, limite por IP e consentimento LGPD) e /creditos.
 - **/servicos**: seletor P/M/G que atualiza preço e duração sem recarregar; tabela completa e taxas do táxi dog.
 - **/agendar**: assistente em 5 passos (pet → serviço → data/horário → táxi dog → revisão) com barra de progresso.
-- **/minha-conta**: próximo banho sugerido (15 dias após o último), cancelamento até 24h antes, pets com
-  carteirinha de vacinas e alertas de vencimento, histórico.
+- **/minha-conta**: acompanhe o banho ao vivo, próximo banho sugerido (15 dias após o último), cancelamento até
+  24h antes, pets com carteirinha de vacinas e alertas de vencimento, histórico.
+- **/equipe** (admin): avança as etapas dos atendimentos do dia.
 - **API para dashboard**: `GET /api/integracao/agendamentos` e `GET /api/integracao/resumo`.
 - **SEO**: metadata, Open Graph gerado por código, sitemap, robots (previews não indexados), JSON-LD `PetStore`.
 
@@ -99,6 +107,7 @@ npm run dev       # http://localhost:3000
 | `npm run db:migrate` | Cria/aplica migrações em desenvolvimento |
 | `npm run db:seed` | Seed idempotente: 40 tutores, 60 pets, 300 agendamentos |
 | `npm run db:studio` | Prisma Studio |
+| `npm run admin:senha` | Gera e mostra uma nova senha para `admin@example.com` (painel /equipe) |
 
 ### API de integração
 
@@ -128,8 +137,9 @@ Invoke-RestMethod "http://localhost:3000/api/integracao/resumo?desde=2026-10-01&
 ```
 prisma/              schema, migrações e seed
 src/app/             rotas (páginas, Route Handlers, metadata)
-src/components/      UI (ui/, layout/, home/, services/, booking/, account/, auth/, seo/)
-src/lib/             regras de negócio, agenda, auth, booking, conta, integração, validação (Zod)
+src/components/      UI (ui/, layout/, home/, content/, motion/, quote/, booking/, account/, staff/, ...)
+src/content/         textos e dados fictícios (empresa, equipe, FAQ, artigos, depoimentos, fotos)
+src/lib/             regras de negócio, agenda, auth, booking, conta, preços, acompanhamento, integração, Zod
 src/proxy.ts         proteção de rotas (antigo middleware no Next 16)
 ```
 
@@ -152,16 +162,23 @@ pet-taxi pricing by ZIP code, a customer area and an integration API for dashboa
 | **Authentication** | Auth.js v5 credentials, bcrypt, JWT in an `httpOnly` cookie, routes guarded by the Next 16 `proxy` **and** again in every page/action, no account enumeration (constant message and timing), internal-only `callbackUrl`. |
 | **API security** | `x-api-key` compared with `crypto.timingSafeEqual`, 60 req/min per IP rate limit enforced before authentication, no personal data (customers become `SHA-256(id + salt)`). |
 | **Integrations** | ViaCEP (Brazilian ZIP API) called server-side with a timeout, Zod-validated response and city checked by IBGE code. |
-| **UI & accessibility** | Tailwind + shadcn/ui, mobile first, styled native radios, managed focus in the wizard, verified WCAG AA contrast, Lighthouse ≥ 92 Performance and 100 Accessibility/SEO. |
-| **Quality** | Strict TypeScript with no `any`, Zod on client and server, 111 Vitest tests, idempotent and deterministic seed. |
+| **UI & accessibility** | Tailwind + shadcn/ui, mobile first, WAI-ARIA tabs and carousel, visible focus on every element (keyboard-audited), WCAG AA contrast, mobile Lighthouse ≥ 90 Performance and 100 Accessibility. |
+| **Real time** | "Track the bath": stage stored in the database, the customer screen refreshes every 30 s (paused in hidden tabs) and announces changes to screen readers; staff panel with atomic updates. |
+| **Motion** | Animations use only `transform`/`opacity`, CSS-animated headline from the first paint, mouse-only parallax and tilt, everything disabled with `prefers-reduced-motion`. |
+| **Quality** | Strict TypeScript with no `any`, Zod on client and server, 138 Vitest tests, idempotent and deterministic seed. |
 
 ### Features
 
-- **Home**: hero, featured services (from the database, cached), how it works, testimonials and location.
+- **Home**: animated hero with parallax badges, services/neighborhoods marquee, bento highlights, featured services
+  (from the database, cached), how it works, before/after slider, stats, testimonial carousel and location.
+- **Company pages**: about (timeline and team), safety, prices (quote simulator, long-coat surcharge, add-ons and
+  plans), policies, FAQ (17 questions in tabs), tips (6 articles), careers (Zod form, per-IP limit, LGPD consent)
+  and credits.
 - **/servicos**: S/M/L size selector that updates price and duration without reloading; full price table.
 - **/agendar**: 5-step booking wizard (pet → service → date/time → pet taxi → review) with a progress bar.
-- **/minha-conta**: suggested next bath (15 days after the last one), cancellation up to 24h before, pets with
-  vaccination cards and expiry alerts, history.
+- **/minha-conta**: live bath tracking, suggested next bath (15 days after the last one), cancellation up to 24h
+  before, pets with vaccination cards and expiry alerts, history.
+- **/equipe** (admin): moves today's appointments through the grooming stages.
 - **Dashboard API**: `GET /api/integracao/agendamentos` and `GET /api/integracao/resumo`.
 - **SEO**: metadata, code-generated Open Graph image, sitemap, robots (previews not indexed), `PetStore` JSON-LD.
 

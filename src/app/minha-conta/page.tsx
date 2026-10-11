@@ -35,11 +35,18 @@ async function AccountContent() {
     ...(today.length > 0
       ? [{ href: "#acompanhe", icon: Radio, label: `${today.length} atendimento${today.length === 1 ? "" : "s"} hoje` }]
       : []),
-    { href: "#agendamentos", icon: CalendarClock, label: `${upcoming.length} próximo${upcoming.length === 1 ? "" : "s"}` },
+    {
+      href: "#agendamentos",
+      icon: CalendarClock,
+      label: `${upcoming.length} próximo${upcoming.length === 1 ? "" : "s"}`,
+    },
     {
       href: "#pets",
       icon: Syringe,
-      label: vaccineAlerts > 0 ? `${vaccineAlerts} vacina${vaccineAlerts === 1 ? "" : "s"} pedindo atenção` : "Vacinas em dia",
+      label:
+        vaccineAlerts > 0
+          ? `${vaccineAlerts} vacina${vaccineAlerts === 1 ? "" : "s"} pedindo atenção`
+          : "Vacinas em dia",
       alert: vaccineAlerts > 0,
     },
     { href: "#pets", icon: PawPrint, label: `${pets.length} pet${pets.length === 1 ? "" : "s"}` },
@@ -49,7 +56,7 @@ async function AccountContent() {
     <>
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-black tracking-tight md:text-4xl">Olá, {firstName}!</h1>
+          <p className="font-[family-name:var(--font-fraunces)] text-2xl font-black">Olá, {firstName}!</p>
           <p className="text-muted-foreground">{user.email}</p>
         </div>
         <form action={signOutAction}>
@@ -91,7 +98,9 @@ async function AccountContent() {
 
       {pets.length === 0 ? (
         <Section id="pets" title="Comece cadastrando seu pet">
-          <p className="text-muted-foreground">Com o pet cadastrado você agenda em poucos cliques e acompanha as vacinas.</p>
+          <p className="text-muted-foreground">
+            Com o pet cadastrado você agenda em poucos cliques e acompanha as vacinas.
+          </p>
           <AddPetForm startOpen />
         </Section>
       ) : (
@@ -161,7 +170,7 @@ function AccountSkeleton() {
   return (
     <div className="flex min-h-svh animate-pulse flex-col gap-10 motion-reduce:animate-none" aria-hidden="true">
       <div className="flex flex-col gap-2">
-        <div className="h-10 w-56 rounded-2xl bg-muted" />
+        <div className="h-8 w-48 rounded-2xl bg-muted" />
         <div className="h-5 w-44 rounded bg-muted" />
       </div>
       <div className="flex gap-2">
@@ -180,6 +189,16 @@ function AccountSkeleton() {
 export default function AccountPage() {
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-10 px-4 py-10 md:py-14">
+      {/* Cabeçalho fora do Suspense: vai no HTML estático e é pintado de imediato (LCP), antes dos dados. */}
+      <header className="flex flex-col gap-2">
+        <p className="w-fit rounded-full border bg-card px-4 py-1.5 text-sm font-bold text-primary-strong">
+          Área do tutor
+        </p>
+        <h1 className="text-4xl font-black tracking-tight sm:text-5xl">Minha conta</h1>
+        <p className="max-w-2xl text-lg text-muted-foreground">
+          O banho de hoje ao vivo, os próximos horários, a carteirinha de vacinas e o histórico de cada pet.
+        </p>
+      </header>
       <Suspense fallback={<AccountSkeleton />}>
         <AccountContent />
       </Suspense>

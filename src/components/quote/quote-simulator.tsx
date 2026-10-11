@@ -22,7 +22,7 @@ type Species = "CACHORRO" | "GATO";
 
 const LONG_COAT_CATS = ["Persa", "Maine Coon", "Himalaio", "Angorá"];
 const optionCard =
-  "flex cursor-pointer items-center gap-3 rounded-2xl border-2 bg-card p-4 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 has-[:checked]:border-primary has-[:checked]:bg-accent has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60 active:scale-[0.98]";
+  "flex cursor-pointer items-center gap-3 rounded-2xl border-2 bg-card p-4 transition-transform duration-200 hover:-translate-y-0.5 has-[:checked]:border-primary has-[:checked]:bg-accent has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60 active:scale-[0.98]";
 
 function Group({ legend, children, hint }: { legend: string; children: React.ReactNode; hint?: React.ReactNode }) {
   return (

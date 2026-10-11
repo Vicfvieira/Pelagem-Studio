@@ -93,7 +93,7 @@ export function BathTracker({ appointment }: { appointment: TodayAppointment }) 
     <article
       aria-labelledby={`acompanhar-${appointment.id}`}
       className={cn(
-        "flex flex-col gap-5 rounded-2xl border-2 bg-card p-5 shadow-sm transition-colors sm:p-6",
+        "flex flex-col gap-5 rounded-2xl border-2 bg-card p-5 shadow-sm sm:p-6",
         ready ? "border-secondary" : "border-primary/40",
       )}
     >

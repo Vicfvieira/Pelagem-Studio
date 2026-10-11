@@ -1,5 +1,3 @@
-import { PawPrint } from "lucide-react";
-
 import { Marquee } from "@/components/motion";
 
 /** Bairros com táxi dog mais pedido (o táxi atende toda a capital, por zona). */
@@ -24,7 +22,7 @@ function Item({ children }: { children: string }) {
   return (
     <span className="flex items-center">
       <span className="px-5 whitespace-nowrap">{children}</span>
-      <PawPrint className="size-4 shrink-0 opacity-60" aria-hidden="true" />
+      <span className="icon-paw shrink-0 opacity-60" aria-hidden="true" />
     </span>
   );
 }

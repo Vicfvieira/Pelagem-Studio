@@ -59,7 +59,7 @@ export function FaqTabs({ categories }: { categories: readonly FaqCategory[] }) 
               onClick={() => setActive(index)}
               onKeyDown={onKeyDown}
               className={cn(
-                "min-h-11 shrink-0 rounded-full px-5 text-sm font-extrabold whitespace-nowrap outline-none transition-colors focus-visible:ring-[3px] focus-visible:ring-ring/60",
+                "min-h-11 shrink-0 rounded-full px-5 text-sm font-extrabold whitespace-nowrap outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60",
                 selected ? "bg-foreground text-background" : "border bg-card hover:bg-accent",
               )}
             >

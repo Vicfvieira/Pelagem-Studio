@@ -21,7 +21,7 @@ export function SizeSelector({ value, onChange, className }: SizeSelectorProps) 
             <label
               key={size}
               className={cn(
-                "relative flex cursor-pointer flex-col items-center gap-0.5 rounded-2xl border-2 bg-card px-2 py-3 text-center transition-colors",
+                "relative flex cursor-pointer flex-col items-center gap-0.5 rounded-2xl border-2 bg-card px-2 py-3 text-center",
                 "hover:border-primary has-[:checked]:border-primary has-[:checked]:bg-accent",
                 "has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-ring/60",
               )}

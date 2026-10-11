@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { ArrowRight, CircleCheck, MapPin } from "lucide-react";
 
+import { HeroIllustration } from "@/components/home/hero-illustration";
 import { HeroVisual } from "@/components/home/hero-visual";
+import { Photo } from "@/components/media/photo";
 import { MagneticButton, SplitText } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 
@@ -41,8 +43,8 @@ export function Hero() {
 
           <p className="slide-in max-w-prose text-lg text-muted-foreground sm:text-xl" style={rise(450)}>
             Hora marcada, <strong className="text-foreground">dois banhistas por horário</strong> e{" "}
-            <strong className="text-foreground">produtos hipoalergênicos</strong>. Você agenda online em 5 passos e,
-            se preferir, o <strong className="text-foreground">táxi dog</strong> busca e leva seu pet em toda a capital.
+            <strong className="text-foreground">produtos hipoalergênicos</strong>. Você agenda online em 5 passos e, se
+            preferir, o <strong className="text-foreground">táxi dog</strong> busca e leva seu pet em toda a capital.
           </p>
 
           <div className="rise-in flex flex-col gap-3 sm:flex-row sm:items-center" style={rise(600)}>
@@ -72,7 +74,16 @@ export function Hero() {
         </div>
 
         <div className="rise-in mx-auto w-full max-w-[34rem]" style={rise(200)}>
-          <HeroVisual />
+          <HeroVisual
+            photo={
+              <Photo
+                slot="hero"
+                priority
+                sizes="(min-width: 768px) 440px, 80vw"
+                fallback={<HeroIllustration className="absolute inset-x-0 bottom-0 w-full" />}
+              />
+            }
+          />
         </div>
       </div>
     </section>

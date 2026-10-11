@@ -119,14 +119,13 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   `SplitText` e `Marquee` animam por CSS (`@keyframes`), começando no primeiro paint, sem esperar hidratação
   (bom para LCP); `Reveal`, `MagneticButton` e futuros parallax/tilt usam motion. Só transform/opacity.
   `CountUp` reserva a largura final (CLS 0) e expõe o valor final em sr-only. Marquee tem botão de pausa
-  (WCAG 2.2.2) e cópia `inert`. `/movimento` é vitrine temporária (sai na A6).
+  (WCAG 2.2.2) e cópia `inert`.
 - **Tipografia (A2)**: títulos (h1–h3) em Fraunces com eixo SOFT (serifa arredondada), corpo em Nunito. Tokens de
   `@theme inline` não viram variáveis CSS, por isso a regra base usa `var(--font-fraunces)` direto. Caramelo de
   título `--primary-display` (#c2611e, 3,97:1) só em texto grande.
 - **Hero (A2)**: título com SplitText (CSS), subtítulo só com deslocamento (sem opacidade 0, para contar no LCP desde o
   primeiro paint), CTAs e selos em sequência. Parallax só com mouse, via motion values (sem re-render), desligado com
-  reduced motion. A "foto" é a ilustração própria até as fotos livres de direitos da A5. `AccountActions` chama
-  `connection()` antes do `auth()` (o Auth.js gera valores aleatórios antes de ler cookies).
+  reduced motion. A "foto" é a ilustração própria até as fotos livres de direitos da A5.
 - **Conteúdo institucional (A3)**: textos e dados fictícios em `src/content/*` (empresa, equipe, linha do tempo,
   depoimentos, FAQ, artigos, vagas) e em `src/lib/site.ts` (CNPJ com dígitos verificadores inválidos de propósito,
   redes só como texto, sem link). Regras citadas no FAQ/políticas vêm das constantes de `business-rules.ts`.
@@ -138,9 +137,8 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   respostas do FAQ em `<details>`. Carrossel de depoimentos sem rolagem automática (scroll-snap + botões).
 - **Trabalhe conosco**: modelo `JobApplication` (migração `job_applications`), Server Action com Zod, limite de 5 envios
   por 10 min por IP (em memória), campo-isca que finge sucesso e consentimento LGPD com data (`consentAt`).
-- **Artigos**: `/dicas/[slug]` com `generateStaticParams`. Com Cache Components não há `dynamicParams=false`; slug
-  desconhecido chama `notFound()`. Por causa do streaming, a 1ª resposta pode sair com status 200, mas com a página 404 e
-  `noindex` (`ensureStatic="navigation"` resolveria, mas o header lê a sessão e quebra o build).
+- **Artigos**: `/dicas/[slug]` com `generateStaticParams` e `ensureStatic = "navigation"` (com Cache Components não há
+  `dynamicParams=false`): slug desconhecido espera a renderização completa e `notFound()` responde 404 de verdade.
 - **Menu**: 5 links no header a partir de `lg`; o resto está no mapa do site do rodapé (`SITEMAP_GROUPS`).
 - **Simulador (A4)**: `estimateQuote` (puro, testado) com preços do banco + `pricing-extras`. O link para /agendar leva
   `servico`, `porte`, `pelo` e `adicionais`; o servidor transforma só valores de uma lista fechada em observações
@@ -163,5 +161,15 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
 - **Layouts (A5)**: bento de diferenciais na home (dados reais: capacidade, taxas do táxi do banco, etapas, plano),
   serviços em grade assimétrica, passos em zigue-zague com caminho tracejado, bordas onduladas (`OrganicDivider`) e
   textura de papel/pontilhado (`.texture-paper`, `.texture-dots`, estáticas).
+- **Performance (A6)**: o header lê a sessão no NAVEGADOR (`useSessionUser`, `GET /api/auth/session`, uma consulta por
+  página), então todas as páginas públicas são 100% estáticas: sem parte dinâmica, o Next não envia o payload do React
+  duas vezes (home: 305 → 198 KB de HTML). Não é controle de acesso: proxy, páginas e ações seguem checando no servidor.
+  Recursos do motion carregados de forma assíncrona (`LazyMotion` com import dinâmico). Conteúdo do topo da página nunca
+  usa `Reveal` (que começa invisível até o JS); usa `.slide-in` (CSS, só transform). Estrelas e patinhas repetidas são
+  máscaras CSS (`.rating-stars`, `.icon-paw`) em vez de dezenas de `<svg>`. Cartões do carrossel e imagens do hero e do
+  antes/depois são renderizados no servidor e passados como `ReactNode` aos componentes cliente (menos hidratação).
+  Formulários de pet e vacina (react-hook-form + Zod) carregam com `next/dynamic` só ao abrir. Em /minha-conta, o
+  título fica fora do `Suspense` (pintado antes dos dados). Transições só de `transform`/`opacity` (barra do
+  agendamento usa `scaleX`). Lighthouse medido como mediana de 3 rodadas (a nota simulada oscila ±5 neste ambiente).
 
 @AGENTS.md

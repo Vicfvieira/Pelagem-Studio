@@ -22,9 +22,10 @@ export default function TipsPage() {
       </PageHeader>
 
       <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Reveal as="li" className="md:col-span-2 lg:row-span-2">
+        {/* Primeiro cartão fica no topo: entrada por CSS (só transform), visível desde o primeiro paint. */}
+        <li className="slide-in md:col-span-2 lg:row-span-2">
           <ArticleCard article={featured} featured />
-        </Reveal>
+        </li>
         {rest.map((article, index) => (
           <Reveal as="li" key={article.slug} delay={(index % 3) * 0.06}>
             <ArticleCard article={article} />

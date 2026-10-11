@@ -41,7 +41,7 @@ export async function FeaturedServices() {
                   <TiltCard>
                     <Card
                       className={cn(
-                        "h-full transition-shadow duration-300 hover:shadow-lg",
+                        "h-full hover:shadow-lg",
                         featured && "border-primary/40 bg-accent md:p-10",
                       )}
                     >

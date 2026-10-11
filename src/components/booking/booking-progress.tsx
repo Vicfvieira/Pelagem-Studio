@@ -15,8 +15,8 @@ export function BookingProgress({ current }: { current: number }) {
       </p>
       <div className="h-2 overflow-hidden rounded-full bg-muted" aria-hidden="true">
         <div
-          className="h-full rounded-full bg-primary transition-[width] duration-300 motion-reduce:transition-none"
-          style={{ width: `${percent}%` }}
+          className="h-full origin-left rounded-full bg-primary transition-transform duration-300 motion-reduce:transition-none"
+          style={{ transform: `scaleX(${percent / 100})` }}
         />
       </div>
       <ol className="grid grid-cols-5 gap-1 text-center text-xs font-semibold">

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 
 import { BeforeAfter } from "@/components/home/before-after";
+import { GroomingIllustration } from "@/components/home/grooming-illustration";
+import { Photo } from "@/components/media/photo";
 import { Button } from "@/components/ui/button";
 import { PHOTOS } from "@/content/photos";
 import { formatCents } from "@/lib/format";
@@ -15,6 +17,20 @@ export function Transformations() {
     <section aria-labelledby="antes-depois-titulo" className="overflow-hidden">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-16 md:grid-cols-[1.2fr_1fr]">
         <BeforeAfter
+          before={
+            <Photo
+              slot="antes"
+              sizes="(min-width: 768px) 600px, 100vw"
+              fallback={<GroomingIllustration variant="antes" />}
+            />
+          }
+          after={
+            <Photo
+              slot="depois"
+              sizes="(min-width: 768px) 600px, 100vw"
+              fallback={<GroomingIllustration variant="depois" />}
+            />
+          }
           caption={`${PHOTOS.antes.src ? "Caso da Mel" : "Ilustração do caso da Mel"}. Arraste a divisória ou use as setas do teclado.`}
         />
         <div className="flex flex-col gap-5">

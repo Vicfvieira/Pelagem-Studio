@@ -1,7 +1,6 @@
-import { Suspense } from "react";
 import Link from "next/link";
 
-import { AccountActions, AccountActionsFallback } from "@/components/layout/account-actions";
+import { AccountActions } from "@/components/layout/account-actions";
 import { Logo } from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { NAV_LINKS } from "@/lib/site";
@@ -28,16 +27,12 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden lg:block">
-          <Suspense fallback={<AccountActionsFallback variant="desktop" />}>
-            <AccountActions variant="desktop" />
-          </Suspense>
+          <AccountActions variant="desktop" />
         </div>
 
         <MobileNav
           account={
-            <Suspense fallback={<AccountActionsFallback variant="mobile" />}>
-              <AccountActions variant="mobile" />
-            </Suspense>
+            <AccountActions variant="mobile" />
           }
         />
       </div>

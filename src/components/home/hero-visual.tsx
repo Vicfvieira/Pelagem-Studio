@@ -4,8 +4,6 @@ import { useEffect, type CSSProperties, type ReactNode } from "react";
 import { Car, Check, Leaf, ShieldCheck } from "lucide-react";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
-import { HeroIllustration } from "@/components/home/hero-illustration";
-import { Photo } from "@/components/media/photo";
 import { cn } from "@/lib/utils";
 
 /** Deslocamento máximo (px) da camada mais "próxima". Leve de propósito. */
@@ -73,7 +71,7 @@ function Badge({
  * Em telas de toque, no teclado e com prefers-reduced-motion, tudo fica parado.
  * Visual decorativo: as mesmas informações aparecem em texto no hero e nas páginas.
  */
-export function HeroVisual({ className }: { className?: string }) {
+export function HeroVisual({ photo, className }: { photo: ReactNode; className?: string }) {
   const reducedMotion = useReducedMotion();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -110,12 +108,7 @@ export function HeroVisual({ className }: { className?: string }) {
       <Layer x={x} y={y} depth={0.35} className="inset-[10%]">
         <div className="relative size-full overflow-hidden rounded-[46%_54%_42%_58%/52%_44%_56%_48%] bg-gradient-to-br from-accent to-[#ffd9b8] shadow-2xl shadow-primary/20">
           <div className="absolute inset-0 [background-image:radial-gradient(#e8833a_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
-          <Photo
-            slot="hero"
-            priority
-            sizes="(min-width: 768px) 440px, 80vw"
-            fallback={<HeroIllustration className="absolute inset-x-0 bottom-0 w-full" />}
-          />
+          {photo}
         </div>
       </Layer>
 
