@@ -1,0 +1,245 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * Tokens do shadcn/ui com a identidade do Pelagem Studio.
+ * Texto sobre caramelo/menta usa #2B2B2B: branco sobre #E8833A não atinge contraste AA.
+ * Para TEXTO colorido sobre o creme, use as versões "strong" (contraste ≥ 4.5:1).
+ */
+:root {
+  --radius: 1rem; /* rounded-2xl */
+
+  --background: #fff8f0;
+  --foreground: #2b2b2b;
+  --card: #ffffff;
+  --card-foreground: #2b2b2b;
+  --popover: #ffffff;
+  --popover-foreground: #2b2b2b;
+  --primary: #e8833a;
+  --primary-foreground: #2b2b2b;
+  --secondary: #5bbfa0;
+  --secondary-foreground: #2b2b2b;
+  --primary-strong: #a3501a;
+  --secondary-strong: #1f6b54;
+  --muted: #f6ebdf;
+  --muted-foreground: #5c5249;
+  --accent: #fde6d2;
+  --accent-foreground: #2b2b2b;
+  --destructive: #b3261e;
+  --destructive-foreground: #ffffff;
+  --border: #ead9c6;
+  --input: #ead9c6;
+  --ring: #b85d1c;
+  /* Caramelo escuro para TÍTULOS grandes (3.97:1 no creme: AA só para texto ≥ 24px ou 19px bold). */
+  --primary-display: #c2611e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-primary-strong: var(--primary-strong);
+  --color-secondary-strong: var(--secondary-strong);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary-display: var(--primary-display);
+
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-nunito);
+  --font-display: var(--font-fraunces), Georgia, serif;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  /* Títulos na fonte de display; "SOFT" arredonda as serifas para combinar com o tom acolhedor. */
+  h1,
+  h2,
+  h3 {
+    /* var(--font-fraunces) direto: tokens de @theme inline não viram variáveis CSS. */
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-variation-settings: "SOFT" 100;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/*
+ * Movimento (Etapa A1). Só transform e opacity: rodam no compositor, sem recalcular layout.
+ * Tudo é desligado em prefers-reduced-motion no bloco ao final.
+ */
+@keyframes split-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em) rotate(4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Hero (Etapa A2): entrada em sequência, selos flutuando e ponto "ao vivo". */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Só deslocamento, sem opacidade: o texto já conta como pintado no primeiro frame (bom para o LCP). */
+@keyframes slide-in {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+@layer components {
+  /* Textura de papel (A5): ruído estático em SVG, só desenhado uma vez (sem animação). */
+  .texture-paper {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .25 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* Pontilhado suave para fundos de seção. */
+  .texture-dots {
+    background-image: radial-gradient(color-mix(in srgb, var(--border) 85%, transparent) 1.2px, transparent 1.2px);
+    background-size: 22px 22px;
+  }
+
+  /*
+   * Ícones repetidos dezenas de vezes (estrelas, patinhas da faixa) como máscara CSS: um elemento só,
+   * em vez de um <svg> inteiro repetido no HTML e no payload do React. Traçados copiados do Lucide.
+   */
+  .icon-paw {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    background-color: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Ccircle cx="11" cy="4" r="2"/%3E%3Ccircle cx="18" cy="8" r="2"/%3E%3Ccircle cx="20" cy="16" r="2"/%3E%3Cpath d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  /* Nota de 0 a 5 em estrelas: uma faixa com 5 estrelas, preenchida até --rating. */
+  .rating-stars {
+    display: inline-block;
+    width: calc((var(--star-size, 1.25rem) + 0.125rem) * 5);
+    height: var(--star-size, 1.25rem);
+    background: linear-gradient(90deg, var(--primary) calc(var(--rating, 5) / 5 * 100%), var(--border) 0);
+    mask: url("data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/%3E%3C/svg%3E") left / calc(var(--star-size, 1.25rem) + 0.125rem) 100% repeat-x;
+  }
+
+  .rise-in {
+    animation: rise-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  .slide-in {
+    animation: slide-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  .float-y {
+    animation: float-y var(--float-duration, 6s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0ms);
+  }
+  .pulse-ring {
+    animation: pulse-ring 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .split-piece {
+    display: inline-block;
+    animation: split-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: var(--split-delay, 0ms);
+  }
+  /* Disparo por rolagem: pausado até o elemento entrar na tela. */
+  [data-split-trigger="inview"]:not([data-inview="true"]) .split-piece {
+    animation-play-state: paused;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+    animation-direction: var(--marquee-direction, normal);
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track,
+  .marquee[data-paused="true"] .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .split-piece,
+  .marquee-track,
+  .rise-in,
+  .slide-in,
+  .float-y,
+  .pulse-ring {
+    animation: none;
+  }
+  /* Sem rolagem automática: a faixa vira uma linha rolável manualmente. */
+  .marquee {
+    overflow-x: auto;
+  }
+}

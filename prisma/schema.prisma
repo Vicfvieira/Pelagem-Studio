@@ -1,0 +1,211 @@
+// Schema do Pelagem Studio.
+// Convenções: valores monetários em centavos (Int), instantes como timestamptz (UTC),
+// datas sem horário (vacinas, nascimento) como @db.Date.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  // Neon COM pooling (host "-pooler"), usada pela aplicação em runtime (serverless na Vercel).
+  // Precisa de "pgbouncer=true": o PgBouncer em modo transação não suporta prepared statements.
+  url       = env("DATABASE_URL")
+  // Neon DIRETA (sem "-pooler"), usada pelo `prisma migrate` (migrações não passam pelo pooler).
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  TUTOR
+  ADMIN
+}
+
+enum Species {
+  CACHORRO
+  GATO
+}
+
+/// P: até 10 kg · M: 10 a 25 kg · G: acima de 25 kg
+enum PetSize {
+  P
+  M
+  G
+}
+
+enum AppointmentStatus {
+  AGENDADO
+  CONCLUIDO
+  CANCELADO
+}
+
+/// Etapas do "Acompanhe o banho", na ordem em que acontecem
+enum GroomingStage {
+  RECEBIDO
+  BANHO
+  SECAGEM
+  TOSA
+  PRONTO
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  role         Role     @default(TUTOR)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  pets         Pet[]
+  appointments Appointment[]
+}
+
+model Pet {
+  id        String    @id @default(cuid())
+  name      String
+  species   Species
+  breed     String
+  /// Peso em kg; o porte é derivado dele (sizeFromWeight) e guardado para consultas rápidas
+  weightKg  Decimal   @db.Decimal(5, 2)
+  size      PetSize
+  birthDate DateTime? @db.Date
+  notes     String?
+  ownerId   String
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+
+  // Cascade: excluir a conta do tutor remove os dados dele (LGPD)
+  owner        User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  vaccines     Vaccine[]
+  appointments Appointment[]
+
+  @@index([ownerId])
+}
+
+model Vaccine {
+  id         String   @id @default(cuid())
+  petId      String
+  name       String
+  appliedAt  DateTime @db.Date
+  /// Data de reforço; usada nos alertas da carteirinha
+  validUntil DateTime @db.Date
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  pet Pet @relation(fields: [petId], references: [id], onDelete: Cascade)
+
+  @@index([petId, validUntil])
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  slug        String  @unique
+  name        String
+  description String
+  sortOrder   Int     @default(0)
+  active      Boolean @default(true)
+
+  prices       ServicePrice[]
+  appointments Appointment[]
+
+  @@index([active, sortOrder])
+}
+
+/// Preço e duração de um serviço para um porte (uma linha por serviço × porte)
+model ServicePrice {
+  id              String  @id @default(cuid())
+  serviceId       String
+  size            PetSize
+  priceCents      Int
+  /// Múltiplo de 30 (tamanho do slot)
+  durationMinutes Int
+
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceId, size])
+}
+
+/// Faixa de CEP da capital paulista atendida pelo táxi dog. Uma zona pode ter várias faixas.
+model TaxiZone {
+  id       String @id @default(cuid())
+  name     String
+  /// CEP como inteiro de 8 dígitos (ex.: 01000000), para comparação por faixa
+  cepStart Int    @unique
+  cepEnd   Int
+  feeCents Int
+
+  appointments Appointment[]
+
+  @@index([cepStart, cepEnd])
+}
+
+model Appointment {
+  id              String            @id @default(cuid())
+  userId          String
+  petId           String
+  serviceId       String
+  /// Snapshot do porte, preço e duração no momento do agendamento
+  size            PetSize
+  priceCents      Int
+  durationMinutes Int
+  startAt         DateTime          @db.Timestamptz(3)
+  endAt           DateTime          @db.Timestamptz(3)
+  status          AppointmentStatus @default(AGENDADO)
+  taxiZoneId      String?
+  taxiCep         String?           @db.Char(8)
+  taxiAddress     String?
+  taxiFeeCents    Int               @default(0)
+  totalCents      Int
+  notes           String?
+  /// Etapa atual no dia do atendimento (null = pet ainda não chegou)
+  groomingStage   GroomingStage?
+  stageUpdatedAt  DateTime?         @db.Timestamptz(3)
+  cancelledAt     DateTime?         @db.Timestamptz(3)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pet      Pet       @relation(fields: [petId], references: [id], onDelete: Cascade)
+  service  Service   @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  taxiZone TaxiZone? @relation(fields: [taxiZoneId], references: [id], onDelete: SetNull)
+
+  // Disponibilidade: agendamentos ativos que cruzam um intervalo
+  @@index([status, startAt, endAt])
+  // Minha conta: próximos e histórico do tutor
+  @@index([userId, startAt])
+  // Próximo banho sugerido e conflito do mesmo pet
+  @@index([petId, startAt])
+  @@index([serviceId])
+  @@index([taxiZoneId])
+}
+
+enum JobRole {
+  BANHISTA
+  TOSADOR
+  RECEPCAO
+  MOTORISTA
+}
+
+enum JobShift {
+  INTEGRAL
+  MANHA
+  TARDE
+}
+
+/// Candidaturas do "Trabalhe conosco". Dados pessoais: nunca saem pela API de integração.
+model JobApplication {
+  id              String   @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  role            JobRole
+  shift           JobShift
+  experienceYears Int
+  about           String
+  /// Instante em que a pessoa aceitou o uso dos dados para o processo seletivo (LGPD).
+  consentAt       DateTime @db.Timestamptz(3)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@index([role, createdAt])
+}
