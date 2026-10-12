@@ -33,6 +33,8 @@ const ROW = {
   cancelledAt: null,
   service: { slug: "banho", name: "Banho" },
   taxiZone: { name: "Sul" },
+  // O mock devolve também o nome para provar que a rota não o repassa.
+  pet: { species: "CACHORRO", name: "Thor" },
 };
 
 let ipCounter = 0;
@@ -109,6 +111,7 @@ describe("GET /api/integracao/agendamentos", () => {
       clienteHash: createHash("sha256").update(`user-123${SALT}`).digest("hex"),
       servico: { slug: "banho", nome: "Banho" },
       porte: "M",
+      especie: "CACHORRO",
       status: "CONCLUIDO",
       inicio: "2026-10-06T17:30:00.000Z",
       fim: "2026-10-06T18:30:00.000Z",
@@ -122,7 +125,7 @@ describe("GET /api/integracao/agendamentos", () => {
     });
 
     const json = JSON.stringify(body);
-    for (const forbidden of ["user-123", "userId", "email", "phone", "telefone", "taxiAddress", "taxiCep", "pet"]) {
+    for (const forbidden of ["user-123", "userId", "email", "phone", "telefone", "taxiAddress", "taxiCep", "Thor", "breed", "weight"]) {
       expect(json).not.toContain(forbidden);
     }
   });
@@ -134,8 +137,9 @@ describe("GET /api/integracao/agendamentos", () => {
       startAt: { gte: new Date("2026-10-01T03:00:00.000Z"), lt: new Date("2026-11-01T03:00:00.000Z") },
     });
     expect(args).toMatchObject({ skip: 10, take: 10 });
-    // O select nunca pede o usuário, o pet nem o endereço.
-    expect(Object.keys(args.select)).not.toEqual(expect.arrayContaining(["user", "pet", "taxiAddress", "taxiCep", "notes"]));
+    // O select nunca pede o usuário nem o endereço; do pet, só a espécie.
+    for (const campo of ["user", "taxiAddress", "taxiCep", "notes"]) expect(args.select).not.toHaveProperty(campo);
+    expect(args.select.pet).toEqual({ select: { species: true } });
   });
 
   it("sem filtros, não restringe datas e usa os padrões de paginação", async () => {

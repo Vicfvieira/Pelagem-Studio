@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
       orderBy: [{ startAt: "desc" }, { id: "asc" }],
       skip: (pagina - 1) * porPagina,
       take: porPagina,
-      // Seleção explícita: nenhum campo pessoal (nome, e-mail, telefone, endereço, CEP, pet) sai daqui.
+      // Seleção explícita: nenhum campo pessoal (nome, e-mail, telefone, endereço, CEP) sai daqui.
+      // Do pet sai só a espécie (cachorro ou gato), nunca nome, raça, peso ou observações.
       select: {
         id: true,
         userId: true,
@@ -50,6 +51,7 @@ export async function GET(request: NextRequest) {
         cancelledAt: true,
         service: { select: { slug: true, name: true } },
         taxiZone: { select: { name: true } },
+        pet: { select: { species: true } },
       },
     }),
   ]);
@@ -61,6 +63,7 @@ export async function GET(request: NextRequest) {
         clienteHash: clientHash(row.userId, salt),
         servico: { slug: row.service.slug, nome: row.service.name },
         porte: row.size,
+        especie: row.pet.species,
         status: row.status,
         inicio: row.startAt.toISOString(),
         fim: row.endAt.toISOString(),

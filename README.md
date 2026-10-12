@@ -121,7 +121,7 @@ Invoke-RestMethod "http://localhost:3000/api/integracao/resumo?desde=2026-10-01&
 ```
 
 - **`/agendamentos`**: `pagina` (≥ 1), `porPagina` (1–100), `desde`/`ate` (`AAAA-MM-DD`, datas de São Paulo,
-  inclusivas). Cada item traz `clienteHash`, serviço, porte, status, horários e valores, e **nenhum** dado pessoal.
+  inclusivas). Cada item traz `clienteHash`, serviço, porte, espécie do pet (`CACHORRO` ou `GATO`), status, horários e valores, e **nenhum** dado pessoal.
 - **`/resumo`**: status, receita, receita prevista, ticket médio, taxa de cancelamento, clientes únicos, serviços,
   portes, táxi dog e ocupação da agenda. Sem datas: últimos 30 dias.
 - Erros: `400` (parâmetros, com detalhes por campo), `401` (chave), `429` (limite), `503` (sem `HASH_SALT`).
