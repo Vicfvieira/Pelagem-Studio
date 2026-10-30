@@ -46,6 +46,8 @@ export function QuoteSimulator({ services }: { services: readonly QuoteServicePr
   const [longCoat, setLongCoat] = useState(false);
   const [serviceSlug, setServiceSlug] = useState(services[0]?.slug ?? "");
   const [addonIds, setAddonIds] = useState<string[]>([]);
+  // A barra fixa do total (celular) só aparece depois da primeira mudança: antes disso ela cobriria os campos.
+  const [touched, setTouched] = useState(false);
 
   const size = sizeFromWeight(weight);
   const input = { serviceSlug, size, longCoat, addonIds };
@@ -59,7 +61,12 @@ export function QuoteSimulator({ services }: { services: readonly QuoteServicePr
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
-      <form className="flex flex-col gap-8" onSubmit={(event) => event.preventDefault()} aria-label="Dados do orçamento">
+      <form
+        className="flex flex-col gap-8"
+        onSubmit={(event) => event.preventDefault()}
+        onChange={() => setTouched(true)}
+        aria-label="Dados do orçamento"
+      >
         <Group legend="1. Espécie">
           <div className="grid grid-cols-2 gap-3">
             {(
@@ -182,7 +189,7 @@ export function QuoteSimulator({ services }: { services: readonly QuoteServicePr
         </Group>
 
         {/* Celular: o total acompanha a rolagem (o resumo completo fica no fim). Deixa espaço para o botão do WhatsApp. */}
-        {quote && (
+        {quote && touched && (
           <a
             href={`#${id}-resumo-painel`}
             className="sticky bottom-4 z-10 mr-16 flex items-center justify-between gap-3 rounded-2xl bg-foreground px-5 py-3 text-background shadow-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/60 lg:hidden"
@@ -211,7 +218,7 @@ export function QuoteSimulator({ services }: { services: readonly QuoteServicePr
               <AnimatedNumber
                 value={quote.totalCents}
                 format={formatCents}
-                className="font-[family-name:var(--font-fraunces)] text-5xl font-black text-primary"
+                className="text-5xl font-black text-primary"
               />
             </p>
             <ul className="flex flex-col gap-2 border-y border-background/15 py-4 text-sm">

@@ -120,9 +120,9 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   (bom para LCP); `Reveal`, `MagneticButton` e futuros parallax/tilt usam motion. Só transform/opacity.
   `CountUp` reserva a largura final (CLS 0) e expõe o valor final em sr-only. Marquee tem botão de pausa
   (WCAG 2.2.2) e cópia `inert`.
-- **Tipografia (A2)**: títulos (h1–h3) em Fraunces com eixo SOFT (serifa arredondada), corpo em Nunito. Tokens de
-  `@theme inline` não viram variáveis CSS, por isso a regra base usa `var(--font-fraunces)` direto. Caramelo de
-  título `--primary-display` (#c2611e, 3,97:1) só em texto grande.
+- **Tipografia**: desde o redesign moderno, títulos e corpo em Nunito (títulos em peso black com tracking -0,02em; a
+  Fraunces da A2 saiu). Tokens de `@theme inline` não viram variáveis CSS, por isso a regra base usa `var(--font-nunito)`
+  direto. Caramelo de título `--primary-display` (#c2611e, 3,97:1) só em texto grande.
 - **Hero (A2)**: título com SplitText (CSS), subtítulo só com deslocamento (sem opacidade 0, para contar no LCP desde o
   primeiro paint), CTAs e selos em sequência. Parallax só com mouse, via motion values (sem re-render), desligado com
   reduced motion. A "foto" é a ilustração própria até as fotos livres de direitos da A5.
@@ -172,5 +172,14 @@ DIRECT_URL); build rodando prisma generate e migrate deploy; README em portuguê
   só carrega perto de entrar na tela (IntersectionObserver), com espaço reservado da mesma altura. Em /minha-conta, o
   título fica fora do `Suspense` (pintado antes dos dados). Transições só de `transform`/`opacity` (barra do
   agendamento usa `scaleX`). Lighthouse medido como mediana de 3 rodadas (a nota simulada oscila ±5 neste ambiente).
+
+- **Redesign moderno (pós-A6)**: barra de avisos escura no topo (`AnnouncementBar`), header com link ativo
+  (`aria-current="page"`), botões em pílula. Hero com a foto dos pets recortada (`public/fotos/pets-hero.webp`, fundo
+  removido por chroma key) sobre um grande círculo caramelo, rabiscos (`Doodle`) e cartões flutuantes decorativos
+  (`aria-hidden`, a informação também está em texto). Home: mais pedidos (preços do banco), categorias em círculos,
+  blocos promocionais coloridos (taxa do táxi e desconto dos planos vindos do banco/`pricing-extras`), "por que escolher",
+  dicas e faixa de garantias. A foto foi enviada pela autora e está como "Licença a confirmar" em `/creditos`.
+  Corrigido bug do A6: as máscaras `.icon-paw`/`.rating-stars` tinham aspas duplas dentro de `url("...")` (CSS inválido).
+  No simulador, a barra fixa do total (celular) só aparece depois da primeira interação (não cobre o controle de peso).
 
 @AGENTS.md

@@ -56,7 +56,7 @@ async function AccountContent() {
     <>
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-col gap-1">
-          <p className="font-[family-name:var(--font-fraunces)] text-2xl font-black">Olá, {firstName}!</p>
+          <p className="text-2xl font-black">Olá, {firstName}!</p>
           <p className="text-muted-foreground">{user.email}</p>
         </div>
         <form action={signOutAction}>

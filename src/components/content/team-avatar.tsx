@@ -27,7 +27,7 @@ export function TeamAvatar({ name, tone, className }: { name: string; tone: "pri
         fontSize="34"
         fontWeight="800"
         fill="#2B2B2B"
-        fontFamily="var(--font-fraunces), Georgia, serif"
+        fontFamily="var(--font-nunito), sans-serif"
       >
         {initials}
       </text>

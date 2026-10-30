@@ -69,13 +69,21 @@ export default function CreditsPage() {
                 <span className="font-bold">{photo.usedOn}</span>
                 <span className="text-muted-foreground">
                   Foto de{" "}
-                  <a href={photo.credit.authorUrl} className={linkClass} target="_blank" rel="noopener noreferrer">
-                    {photo.credit.author}
-                  </a>{" "}
-                  no{" "}
-                  <a href={photo.credit.sourceUrl} className={linkClass} target="_blank" rel="noopener noreferrer">
-                    {photo.credit.source}
-                  </a>{" "}
+                  {photo.credit.authorUrl ? (
+                    <a href={photo.credit.authorUrl} className={linkClass} target="_blank" rel="noopener noreferrer">
+                      {photo.credit.author}
+                    </a>
+                  ) : (
+                    <strong className="text-foreground">{photo.credit.author}</strong>
+                  )}{" "}
+                  ·{" "}
+                  {photo.credit.sourceUrl ? (
+                    <a href={photo.credit.sourceUrl} className={linkClass} target="_blank" rel="noopener noreferrer">
+                      {photo.credit.source}
+                    </a>
+                  ) : (
+                    photo.credit.source
+                  )}{" "}
                   · {photo.credit.license}
                 </span>
               </li>

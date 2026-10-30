@@ -41,7 +41,7 @@ export default function AboutPage() {
           {/* Topo da página: entrada por CSS (só transform), visível desde o primeiro paint (LCP). */}
           <div className="slide-in flex flex-col justify-center gap-4 rounded-2xl bg-primary p-8 md:p-10">
             <h2 className="text-sm font-extrabold tracking-wide uppercase">Nossa missão</h2>
-            <p className="font-[family-name:var(--font-fraunces)] text-2xl leading-snug font-bold sm:text-3xl">
+            <p className="text-2xl leading-snug font-bold sm:text-3xl">
               {MISSION}
             </p>
           </div>
