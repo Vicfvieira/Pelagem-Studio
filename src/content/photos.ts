@@ -9,10 +9,11 @@ export type PhotoSlot = "hero" | "antes" | "depois";
 
 export type PhotoCredit = {
   author: string;
-  authorUrl: string;
-  source: "Unsplash" | "Pexels" | "Wikimedia Commons";
-  sourceUrl: string;
-  license: "Unsplash License" | "Pexels License" | "CC0";
+  /** Sem link quando a autoria não tem página pública. */
+  authorUrl: string | null;
+  source: "Unsplash" | "Pexels" | "Wikimedia Commons" | "Enviada pela autora do projeto";
+  sourceUrl: string | null;
+  license: "Unsplash License" | "Pexels License" | "CC0" | "Licença a confirmar";
 };
 
 export type Photo = {
@@ -31,11 +32,18 @@ export const PHOTOS: Record<PhotoSlot, Photo> = {
   hero: {
     slot: "hero",
     usedOn: "Página inicial, topo",
-    alt: "Cachorro de pelo caramelo enrolado numa toalha depois do banho, olhando para a câmera.",
-    src: null,
-    width: 1200,
-    height: 1200,
-    credit: null,
+    alt: "Um gato de pelo longo caramelo encostado num cachorro preto e branco sorridente, lado a lado.",
+    // Recorte (fundo removido) feito a partir da foto enviada pela autora; origem e licença a confirmar.
+    src: "/fotos/pets-hero.webp",
+    width: 681,
+    height: 682,
+    credit: {
+      author: "Victoria Fernandes Vieira (envio)",
+      authorUrl: null,
+      source: "Enviada pela autora do projeto",
+      sourceUrl: null,
+      license: "Licença a confirmar",
+    },
   },
   antes: {
     slot: "antes",

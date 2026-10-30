@@ -14,7 +14,7 @@ export function StatsBand({ className }: { className?: string }) {
           {STATS.map((stat) => (
             <div key={stat.id} className="flex flex-col gap-1">
               <dt className="order-2 text-sm font-semibold text-background/80">{stat.label}</dt>
-              <dd className="order-1 font-[family-name:var(--font-fraunces)] text-5xl font-black text-primary sm:text-6xl">
+              <dd className="order-1 text-5xl font-black text-primary sm:text-6xl">
                 <CountUp value={stat.value} decimals={stat.decimals} prefix={stat.prefix} suffix={stat.suffix} />
               </dd>
             </div>

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Nunito } from "next/font/google";
+import { Nunito } from "next/font/google";
 
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
@@ -15,13 +16,6 @@ const nunito = Nunito({
   display: "swap",
 });
 
-/** Títulos: serifa "macia" (eixo SOFT); o corpo segue em Nunito. */
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  axes: ["SOFT"],
-  display: "swap",
-});
 
 const DESCRIPTION =
   "Banho, tosa, hidratação e táxi dog com hora marcada em São Paulo. Agende online em poucos passos.";
@@ -56,7 +50,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${nunito.variable} ${fraunces.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${nunito.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
         <a
           href="#conteudo"
@@ -65,6 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         <MotionProvider>
+          <AnnouncementBar />
           <SiteHeader />
           <main id="conteudo" tabIndex={-1} className="flex-1 outline-none">
             {children}

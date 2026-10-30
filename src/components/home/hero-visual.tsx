@@ -1,17 +1,13 @@
 "use client";
 
 import { useEffect, type CSSProperties, type ReactNode } from "react";
-import { Car, Check, Leaf, ShieldCheck } from "lucide-react";
+import { ShieldCheck, Star } from "lucide-react";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionValue } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
 /** Deslocamento máximo (px) da camada mais "próxima". Leve de propósito. */
-const MAX_SHIFT = 14;
-
-/** Passos do "Acompanhe o banho" (prévia; a funcionalidade real chega na área do tutor). */
-const STEPS = ["Recebido", "Banho", "Secagem", "Tosa", "Pronto"] as const;
-const CURRENT_STEP = 2;
+const MAX_SHIFT = 12;
 
 /** Camada que se move na proporção da sua "profundidade" (depth). */
 function Layer({
@@ -36,42 +32,24 @@ function Layer({
   );
 }
 
-function Badge({
-  icon: Icon,
-  children,
-  tone,
-  floatDelay,
-}: {
-  icon: typeof ShieldCheck;
-  children: ReactNode;
-  tone: "primary" | "secondary";
-  floatDelay: number;
-}) {
-  return (
-    <div
-      className="float-y flex items-center gap-2 rounded-2xl border bg-card px-3 py-2 text-xs font-extrabold shadow-lg shadow-primary/10 sm:text-sm"
-      style={{ "--float-delay": `${floatDelay}ms` } as CSSProperties}
-    >
-      <span
-        className={cn(
-          "grid size-7 shrink-0 place-items-center rounded-full sm:size-8",
-          tone === "primary" ? "bg-primary" : "bg-secondary",
-        )}
-      >
-        <Icon className="size-4" aria-hidden="true" />
-      </span>
-      {children}
-    </div>
-  );
-}
+const float = (delay: number) => ({ "--float-delay": `${delay}ms` }) as CSSProperties;
+
+type HeroVisualProps = {
+  /** Foto recortada (renderizada no servidor). */
+  photo: ReactNode;
+  /** Rabiscos decorativos (renderizados no servidor). */
+  doodles: ReactNode;
+  rating: string;
+  reviews: string;
+  className?: string;
+};
 
 /**
- * Composição do hero: pet recortado numa forma orgânica, selos flutuando e um cartão de status.
- * Parallax: o cursor (só mouse) desloca cada camada conforme a profundidade, com mola.
- * Em telas de toque, no teclado e com prefers-reduced-motion, tudo fica parado.
- * Visual decorativo: as mesmas informações aparecem em texto no hero e nas páginas.
+ * Composição do hero: pets recortados "apoiados" num grande círculo caramelo, rabiscos à mão e cartões
+ * flutuantes. Parallax só com mouse (camadas em profundidades diferentes, com mola); parado no toque,
+ * no teclado e com prefers-reduced-motion. Decorativo: as informações dos cartões também estão em texto na página.
  */
-export function HeroVisual({ photo, className }: { photo: ReactNode; className?: string }) {
+export function HeroVisual({ photo, doodles, rating, reviews, className }: HeroVisualProps) {
   const reducedMotion = useReducedMotion();
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
@@ -86,7 +64,6 @@ export function HeroVisual({ photo, className }: { photo: ReactNode; className?:
     }
     function onPointerMove(event: PointerEvent) {
       if (event.pointerType !== "mouse") return;
-      // -1 a 1 a partir do centro da janela.
       rawX.set((event.clientX / window.innerWidth) * 2 - 1);
       rawY.set((event.clientY / window.innerHeight) * 2 - 1);
     }
@@ -95,80 +72,73 @@ export function HeroVisual({ photo, className }: { photo: ReactNode; className?:
   }, [reducedMotion, rawX, rawY]);
 
   return (
-    <div className={cn("relative aspect-square w-full", className)} aria-hidden="true">
-      {/* Formas de fundo */}
-      <Layer x={x} y={y} depth={-0.4} className="inset-[4%]">
-        <div className="size-full rounded-[58%_42%_47%_53%/45%_55%_45%_55%] bg-secondary/25" />
+    <div className={cn("relative aspect-[1/1.02] w-full overflow-hidden", className)}>
+      {/* Círculo grande (cortado na base, como um "palco") e círculo menta menor */}
+      <Layer x={x} y={y} depth={-0.3} className="inset-x-[3%] -bottom-[24%] aspect-square">
+        <div className="size-full rounded-full bg-primary" aria-hidden="true" />
       </Layer>
-      <Layer x={x} y={y} depth={-0.8} className="right-[2%] bottom-[6%] size-[26%]">
-        <div className="size-full rounded-full bg-primary/20" />
+      <Layer x={x} y={y} depth={-0.7} className="top-[8%] right-[6%] size-[16%]">
+        <div className="size-full rounded-full bg-secondary" aria-hidden="true" />
       </Layer>
 
-      {/* Foto recortada em forma orgânica (ou a ilustração própria, enquanto não há foto com crédito). */}
-      <Layer x={x} y={y} depth={0.35} className="inset-[10%]">
-        <div className="relative size-full overflow-hidden rounded-[46%_54%_42%_58%/52%_44%_56%_48%] bg-gradient-to-br from-accent to-[#ffd9b8] shadow-2xl shadow-primary/20">
-          <div className="absolute inset-0 [background-image:radial-gradient(#e8833a_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
-          {photo}
+      <Layer x={x} y={y} depth={-0.9} className="inset-0">
+        {doodles}
+      </Layer>
+
+      {/* Foto apoiada na base */}
+      <div className="absolute inset-x-[10%] bottom-0 top-[14%] [mask-image:linear-gradient(to_left,transparent,black_16%)]">
+        {photo}
+      </div>
+
+      {/* Cartões flutuantes */}
+      <Layer x={x} y={y} depth={1.2} className="top-[6%] left-0">
+        <div
+          className="float-y flex items-center gap-3 rounded-2xl bg-card px-3 py-2.5 shadow-xl shadow-foreground/10"
+          style={float(0)}
+          aria-hidden="true"
+        >
+          <span className="flex -space-x-2">
+            {["#E8833A", "#5BBFA0", "#2B2B2B"].map((color, index) => (
+              <span
+                key={color}
+                className="grid size-7 place-items-center rounded-full border-2 border-card text-[10px] font-black text-white"
+                style={{ backgroundColor: color }}
+              >
+                {["M", "R", "J"][index]}
+              </span>
+            ))}
+          </span>
+          <span className="flex flex-col leading-tight">
+            <span className="flex items-center gap-1 text-sm font-black">
+              <Star className="size-3.5 fill-primary text-primary" /> {rating}
+            </span>
+            <span className="text-[11px] font-semibold text-muted-foreground">{reviews}</span>
+          </span>
         </div>
       </Layer>
-
-      {/* Selos */}
-      <Layer x={x} y={y} depth={1.2} className="top-[6%] left-0">
-        <Badge icon={ShieldCheck} tone="secondary" floatDelay={0}>
+      <Layer x={x} y={y} depth={1.5} className="right-0 top-[44%]">
+        <div
+          className="float-y flex items-center gap-2 rounded-full bg-card py-2 pr-4 pl-2 text-xs font-extrabold shadow-xl shadow-foreground/10 sm:text-sm"
+          style={float(900)}
+          aria-hidden="true"
+        >
+          <span className="grid size-7 place-items-center rounded-full bg-secondary">
+            <ShieldCheck className="size-4" />
+          </span>
           Banhistas certificados
-        </Badge>
+        </div>
       </Layer>
-      <Layer x={x} y={y} depth={1.6} className="top-[30%] right-0">
-        <Badge icon={Leaf} tone="secondary" floatDelay={900}>
-          Produtos hipoalergênicos
-        </Badge>
-      </Layer>
-      <Layer x={x} y={y} depth={0.9} className="top-[58%] left-0 hidden sm:block">
-        <Badge icon={Car} tone="primary" floatDelay={1800}>
-          Táxi dog a partir de R$ 15
-        </Badge>
-      </Layer>
-
-      {/* Cartão de status */}
-      <Layer x={x} y={y} depth={1.4} className="right-[4%] bottom-0 w-[min(68%,250px)]">
-        <div className="rounded-2xl border bg-card p-3 shadow-xl shadow-primary/10 sm:p-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-extrabold">Paçoca · Shih-tzu</p>
-            <span className="flex items-center gap-1.5 rounded-full bg-secondary/20 px-2 py-0.5 text-[11px] font-extrabold text-secondary-strong">
-              <span className="relative flex size-2">
-                <span className="pulse-ring absolute inset-0 rounded-full bg-secondary" />
-                <span className="relative size-2 rounded-full bg-secondary-strong" />
-              </span>
-              Ao vivo
-            </span>
-          </div>
-          <ol className="mt-3 flex items-center gap-1">
-            {STEPS.map((step, index) => (
-              <li key={step} className="flex flex-1 flex-col items-center gap-1">
-                <span
-                  className={cn(
-                    "grid size-5 place-items-center rounded-full text-[10px] font-black",
-                    index < CURRENT_STEP && "bg-secondary text-foreground",
-                    index === CURRENT_STEP && "bg-primary text-foreground ring-4 ring-primary/25",
-                    index > CURRENT_STEP && "bg-muted text-muted-foreground",
-                  )}
-                >
-                  {index < CURRENT_STEP ? <Check className="size-3" /> : index + 1}
-                </span>
-                <span
-                  className={cn(
-                    "text-[10px] leading-none font-bold",
-                    index === CURRENT_STEP ? "text-foreground" : "text-muted-foreground",
-                  )}
-                >
-                  {step}
-                </span>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Pronto para buscar por volta das <strong className="text-foreground">15h30</strong>
-          </p>
+      <Layer x={x} y={y} depth={1} className="bottom-[8%] left-[2%]">
+        <div
+          className="float-y flex items-center gap-2 rounded-full bg-foreground py-2 pr-4 pl-3 text-xs font-extrabold text-background shadow-xl sm:text-sm"
+          style={float(1800)}
+          aria-hidden="true"
+        >
+          <span className="relative flex size-2.5">
+            <span className="pulse-ring absolute inset-0 rounded-full bg-secondary" />
+            <span className="relative size-2.5 rounded-full bg-secondary" />
+          </span>
+          Ao vivo: Paçoca na secagem
         </div>
       </Layer>
     </div>

@@ -98,7 +98,7 @@ export default function SafetyPage() {
             <Reveal as="li" key={step.title} delay={(index % 3) * 0.08}>
               <article className="relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border bg-card p-6 shadow-sm">
                 <span
-                  className="absolute -top-3 -right-1 font-[family-name:var(--font-fraunces)] text-8xl font-black text-accent"
+                  className="absolute -top-3 -right-1 text-8xl font-black text-accent"
                   aria-hidden="true"
                 >
                   {index + 1}
